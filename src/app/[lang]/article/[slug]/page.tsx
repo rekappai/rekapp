@@ -1,21 +1,17 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { useTranslations, type Lang } from '@/lib/i18n'
 import { parseTags } from '@/lib/types'
-import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
 
 async function getArticle(slug: string, lang: string) {
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('articles')
-    .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts(direction, change_pct, price_at_alert, previous_close, triggered_at)')
-    .eq('meta_slug', slug)
-    .eq('lang_code', lang)
-    .eq('published', true)
-    .single()
-  if (error || !data) return null
+    .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts(direction, change_pct, price_at_alert, previous_close)')
+    .eq('meta_slug', slug).eq('lang_code', lang).eq('published', true).single()
   return data
 }
 
@@ -23,20 +19,16 @@ async function getRelated(stockId: string, lang: string, excludeSlug: string) {
   const { data } = await supabase
     .from('articles')
     .select('headline, meta_slug, stocks(symbol), alerts(direction, change_pct)')
-    .eq('lang_code', lang)
-    .eq('stock_id', stockId)
-    .eq('published', true)
-    .neq('meta_slug', excludeSlug)
-    .order('published_at', { ascending: false })
-    .limit(3)
+    .eq('lang_code', lang).eq('stock_id', stockId).eq('published', true)
+    .neq('meta_slug', excludeSlug).order('published_at', { ascending: false }).limit(3)
   return data ?? []
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
   const { lang, slug } = await params
-  const article = await getArticle(slug, lang)
-  if (!article) return {}
-  return { title: article.meta_title || article.headline, description: article.meta_description || '' }
+  const a = await getArticle(slug, lang)
+  if (!a) return {}
+  return { title: a.meta_title || a.headline, description: a.meta_description || '' }
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ lang: string; slug: string }> }) {
@@ -50,129 +42,86 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const tags = parseTags(article.tags)
   const related = await getRelated(article.stock_id, lang, slug)
   const up = alert?.direction === 'up'
-
-  const publishedDate = new Date(article.published_at).toLocaleDateString(
-    lang === 'it' ? 'it-IT' : 'en-GB',
-    { day: 'numeric', month: 'long', year: 'numeric' }
-  )
-  const publishedTime = new Date(article.published_at).toLocaleTimeString(
-    lang === 'it' ? 'it-IT' : 'en-GB',
-    { hour: '2-digit', minute: '2-digit' }
-  )
+  const cur = stock?.country_code === 'us' ? '$' : '€'
+  const loc = lang === 'it' ? 'it-IT' : 'en-GB'
+  const pubDate = new Date(article.published_at).toLocaleDateString(loc, { day:'numeric', month:'long', year:'numeric' })
+  const pubTime = new Date(article.published_at).toLocaleTimeString(loc, { hour:'2-digit', minute:'2-digit' })
 
   return (
-    <div className="max-w-[1240px] mx-auto px-[--pad]">
-      <div className="flex items-center gap-3.5 pt-5">
-        <Link href={`/${lang}`} className="font-[family-name:var(--font-dm-mono)] text-[0.54rem] tracking-[0.12em] uppercase text-[--text-dim] hover:text-[--gold] transition-colors">
-          {t.article.back}
-        </Link>
-        <div className="flex-1 h-px bg-[--ink-border]" />
+    <div className="page">
+      <div className="back-row">
+        <Link href={'/' + lang} className="back-btn">{t.article.back}</Link>
+        <div className="back-line" />
       </div>
-
-      <div className="grid border-t border-[--ink-border] mt-0" style={{ gridTemplateColumns: '1fr 280px' }}>
-        <article className="py-8 pr-11 border-r border-[--ink-border]">
-          <div className="font-[family-name:var(--font-dm-mono)] text-[0.54rem] tracking-[0.18em] uppercase text-[--gold] mb-3">
-            {stock?.country_code?.toUpperCase()} · {stock?.sector} · {publishedDate}, {publishedTime}
-          </div>
-          <h1 className="font-[family-name:var(--font-playfair)] text-[1.85rem] font-normal leading-[1.22] tracking-tight text-[--text] mb-3.5">
-            {article.headline}
-          </h1>
-          <div className="flex items-center gap-2.5 flex-wrap text-[0.7rem] text-[--text-dim] pb-5 mb-5 border-b border-[--ink-border]">
+      <div className="art-view-layout">
+        <article className="art-main">
+          <div className="art-kicker">{stock?.country_code?.toUpperCase()} · {stock?.sector} · {pubDate}, {pubTime}</div>
+          <h1 className="art-h1">{article.headline}</h1>
+          <div className="art-byline">
             <span>{t.article.byline}</span>
-            <span className="font-[family-name:var(--font-dm-mono)] text-[0.54rem] text-[--up] border border-[#2d4a34] px-[7px] py-[2px]">
-              {t.article.factChecked}
-            </span>
-            <span>{publishedTime}</span>
+            <span className="fact-badge">{t.article.factChecked}</span>
+            <span>{pubTime}</span>
           </div>
-
-          <div className="flex gap-1.5 mb-5 pb-5 border-b border-[--ink-border]">
-            <Link href={`/en/article/${slug}`} className={`flex items-center gap-1 px-2.5 py-1 border font-[family-name:var(--font-dm-mono)] text-[0.58rem] transition-all ${lang === 'en' ? 'text-[--text] border-[#3a3830] bg-[--ink-raised]' : 'text-[--text-dim] border-[--ink-border] hover:text-[--gold] hover:border-[--gold-border]'}`}>
-              🇬🇧 English
-            </Link>
-            <Link href={`/it/article/${slug}`} className={`flex items-center gap-1 px-2.5 py-1 border font-[family-name:var(--font-dm-mono)] text-[0.58rem] transition-all ${lang === 'it' ? 'text-[--text] border-[#3a3830] bg-[--ink-raised]' : 'text-[--text-dim] border-[--ink-border] hover:text-[--gold] hover:border-[--gold-border]'}`}>
-              🇮🇹 Italiano
-            </Link>
+          <div className="art-lang">
+            <Link href={'/en/article/' + slug} className={lang === 'en' ? 'active' : ''}>🇬🇧 English</Link>
+            <Link href={'/it/article/' + slug} className={lang === 'it' ? 'active' : ''}>🇮🇹 Italiano</Link>
           </div>
-
-          <div className="space-y-4 mb-7">
-            {article.body?.split('\n\n').filter(Boolean).map((para: string, i: number) => (
-              <p key={i} className={`leading-[1.82] text-[--text] ${i === 0 ? 'text-[0.95rem]' : 'text-[0.88rem]'}`}>{para}</p>
-            ))}
+          <div className="art-body">
+            {article.body?.split('\n\n').filter(Boolean).map((p: string, i: number) => <p key={i}>{p}</p>)}
           </div>
-
           {article.explainer_body && (
             <>
-              <div className="flex items-center gap-3 my-7">
-                <span className="font-[family-name:var(--font-dm-mono)] text-[0.54rem] tracking-[0.16em] uppercase text-[--gold] whitespace-nowrap">
-                  {t.article.whatItMeans}
-                </span>
-                <div className="flex-1 h-px bg-[--ink-border]" />
+              <div className="expl-head">
+                <span className="expl-lbl">{t.article.whatItMeans}</span>
+                <div className="expl-line" />
               </div>
-              <div className="space-y-4">
-                {article.explainer_body.split('\n\n').filter(Boolean).map((para: string, i: number) => (
-                  <p key={i} className="text-[0.88rem] leading-[1.82] text-[--text]">{para}</p>
-                ))}
+              <div className="art-body">
+                {article.explainer_body.split('\n\n').filter(Boolean).map((p: string, i: number) => <p key={i}>{p}</p>)}
               </div>
             </>
           )}
-
           {tags.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-[--ink-border]">
-              <div className="font-[family-name:var(--font-dm-mono)] text-[0.52rem] tracking-[0.16em] uppercase text-[--text-dim] mb-2.5">{t.article.tags}</div>
-              <div className="flex flex-wrap gap-1.5">
+            <div className="art-tags">
+              <div className="art-tags-lbl">{t.article.tags}</div>
+              <div className="tags">
                 {tags.map((tag: string) => (
-                  <Link key={tag} href={`/${lang}/topics?tag=${tag}`} className="font-[family-name:var(--font-dm-mono)] text-[0.52rem] tracking-[0.08em] uppercase text-[--text-dim] border border-[--ink-border] px-2 py-1 hover:text-[--gold] hover:border-[--gold-border] transition-all">
-                    {tag}
-                  </Link>
+                  <Link key={tag} href={'/' + lang + '/topics?tag=' + tag} className="tag">{tag}</Link>
                 ))}
               </div>
             </div>
           )}
         </article>
-
-        <aside className="pl-7 pt-8">
+        <aside className="art-sb">
           {stock && alert && (
-            <div className="mb-6 pb-6 border-b border-[--ink-border]">
-              <div className="font-[family-name:var(--font-dm-mono)] text-[0.52rem] tracking-[0.16em] uppercase text-[--text-dim] mb-3">
-                {stock.symbol} · {stock.name}
+            <div className="art-sb-sec">
+              <div className="art-sb-lbl">{stock.symbol} · {stock.name}</div>
+              <div className="price-big">{alert.price_at_alert ? cur + Number(alert.price_at_alert).toFixed(2) : '—'}</div>
+              <div className="price-chg" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
+                {up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%
               </div>
-              <div className="font-[family-name:var(--font-dm-mono)] text-[1.8rem] font-medium text-[--text] leading-none mb-1.5">
-                {alert.price_at_alert ? `${stock.country_code === 'us' ? '$' : '€'}${Number(alert.price_at_alert).toFixed(2)}` : '—'}
-              </div>
-              <div className={`flex items-center gap-2 font-[family-name:var(--font-dm-mono)] text-[0.75rem] mb-4 ${up ? 'text-[--up]' : 'text-[--down]'}`}>
-                <span>{up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%</span>
-              </div>
-              {([
-                [t.article.previousClose, alert.previous_close ? `${stock.country_code === 'us' ? '$' : '€'}${Number(alert.previous_close).toFixed(2)}` : '—'],
-                [t.article.capTier, stock.cap_tier ? (stock.cap_tier === 'large' ? t.article.large : stock.cap_tier === 'mid' ? t.article.mid : t.article.small) : '—'],
+              {[
+                [t.article.previousClose, alert.previous_close ? cur + Number(alert.previous_close).toFixed(2) : '—'],
+                [t.article.capTier, stock.cap_tier === 'large' ? t.article.large : stock.cap_tier === 'mid' ? t.article.mid : t.article.small],
                 [t.article.moveThreshold, stock.cap_tier === 'large' ? '±4.0%' : stock.cap_tier === 'mid' ? '±8.0%' : '±10.0%'],
-              ] as [string, string][]).map(([label, value]) => (
-                <div key={label} className="flex justify-between py-1.5 border-b border-[--ink-border] last:border-0 text-[0.7rem]">
-                  <span className="text-[--text-dim]">{label}</span>
-                  <span className="font-[family-name:var(--font-dm-mono)] text-[--text]">{value}</span>
-                </div>
+              ].map(([l, v]) => (
+                <div key={l} className="mini-row"><span className="mini-lbl">{l}</span><span className="mini-val">{v}</span></div>
               ))}
             </div>
           )}
-
           {related.length > 0 && (
-            <div className="mb-6 pb-6 border-b border-[--ink-border]">
-              <div className="font-[family-name:var(--font-dm-mono)] text-[0.52rem] tracking-[0.16em] uppercase text-[--text-dim] mb-3">{t.article.related}</div>
-              <div className="flex flex-col gap-3.5">
-                {related.map((r: any) => (
-                  <Link key={r.meta_slug} href={`/${lang}/article/${r.meta_slug}`} className="group">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-[family-name:var(--font-dm-mono)] text-[0.56rem] text-[--text] bg-[--ink-border] px-1.5 py-0.5">{r.stocks?.symbol}</span>
-                      <span className={`font-[family-name:var(--font-dm-mono)] text-[0.58rem] ${r.alerts?.direction === 'up' ? 'text-[--up]' : 'text-[--down]'}`}>
-                        {r.alerts?.direction === 'up' ? '+' : ''}{Number(r.alerts?.change_pct ?? 0).toFixed(1)}%
-                      </span>
-                    </div>
-                    <div className="font-[family-name:var(--font-playfair)] text-[0.8rem] leading-[1.35] text-[--text] group-hover:text-white transition-colors">
-                      {r.headline}
-                    </div>
-                  </Link>
-                ))}
-              </div>
+            <div className="art-sb-sec">
+              <div className="art-sb-lbl">{t.article.related}</div>
+              {related.map((r: any) => (
+                <Link key={r.meta_slug} href={'/' + lang + '/article/' + r.meta_slug} style={{ display:'block', marginBottom:14, textDecoration:'none' }}>
+                  <div style={{ display:'flex', gap:7, alignItems:'center', marginBottom:4 }}>
+                    <span className="ticker-badge" style={{ fontSize:'0.56rem' }}>{r.stocks?.symbol}</span>
+                    <span className={'chg ' + (r.alerts?.direction==='up'?'up':'dn')} style={{ fontSize:'0.58rem' }}>
+                      {r.alerts?.direction==='up'?'+':''}{Number(r.alerts?.change_pct??0).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div style={{ fontFamily:'Playfair Display,serif', fontSize:'0.8rem', lineHeight:1.35, color:'var(--text)' }}>{r.headline}</div>
+                </Link>
+              ))}
             </div>
           )}
         </aside>
