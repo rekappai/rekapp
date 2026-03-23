@@ -4,6 +4,9 @@ import { useState, useMemo } from 'react'
 import { parseTags } from '@/lib/types'
 import type { Lang } from '@/lib/i18n'
 
+type StockRow = { symbol: string; name: string }
+type AlertRow = { direction: string; change_pct: number }
+
 type AA = {
   id: string
   headline: string
@@ -11,18 +14,18 @@ type AA = {
   published_at: string
   country_code: string
   tags: string | string[]
-  stocks?: { symbol: string; name: string } | { symbol: string; name: string }[] | null
-  alerts?: { direction: string; change_pct: number } | { direction: string; change_pct: number }[] | null
+  stocks?: StockRow | StockRow[] | null
+  alerts?: AlertRow | AlertRow[] | null
 }
 
-function getStock(a: AA) {
+// Supabase returns joins as arrays when using foreign keys
+function firstStock(a: AA): StockRow | null {
   if (!a.stocks) return null
-  return Array.isArray(a.stocks) ? a.stocks[0] : a.stocks
+  return Array.isArray(a.stocks) ? (a.stocks[0] ?? null) : a.stocks
 }
-
-function getAlert(a: AA) {
+function firstAlert(a: AA): AlertRow | null {
   if (!a.alerts) return null
-  return Array.isArray(a.alerts) ? a.alerts[0] : a.alerts
+  return Array.isArray(a.alerts) ? (a.alerts[0] ?? null) : a.alerts
 }
 
 const SLUGS = ['earnings','analysts','ai','banks','energy','evs','semiconductors','macro','ma','rates','ipo','fda','trade']
@@ -34,7 +37,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
   const [drawer, setDrawer] = useState(false)
 
   const filtered = useMemo(() => articles.filter(a => {
-    const alert = getAlert(a)
+    const alert = firstAlert(a)
     if (fM !== 'all' && a.country_code !== fM) return false
     if (fD !== 'all' && alert?.direction !== fD) return false
     if (fT !== 'all' && !parseTags(a.tags).includes(fT)) return false
@@ -70,17 +73,15 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
     <>
       {/* Desktop filter bar */}
       <div className="arc-filter-bar">
-        {groups.map((g, gi) => (
+        {groups.map(g => (
           <div key={g.label} className="arc-filter-group">
             <span className="arc-filter-label">{g.label}</span>
             <div className="arc-filter-pills">
               {g.opts.map(([v, l]) => <Pill key={v} val={v} cur={g.cur} set={g.set} label={l} />)}
             </div>
-            {gi < groups.length - 1 && <div className="arc-filter-divider" />}
           </div>
         ))}
-        <div className="arc-filter-divider" />
-        <div className="arc-filter-group">
+        <div className="arc-filter-group" style={{ flex: 1 }}>
           <span className="arc-filter-label">{t.archive.filter.topic}</span>
           <div className="arc-filter-pills">
             <Pill val="all" cur={fT} set={setFT} label={t.archive.filter.all} />
@@ -93,13 +94,11 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
       <button
         className={'arc-filter-mob-btn' + (activeCount > 0 ? ' active-filter' : '')}
         onClick={() => setDrawer(o => !o)}
-        style={{ display: 'flex' }}
       >
-        <span>{activeCount > 0 ? t.archive.filters + ' (' + activeCount + ')' : t.archive.filters}</span>
+        <span>{activeCount > 0 ? `${t.archive.filters} (${activeCount})` : t.archive.filters}</span>
         <span style={{ transition: 'transform 0.2s', transform: drawer ? 'rotate(180deg)' : 'none' }}>▼</span>
       </button>
 
-      {/* Mobile drawer */}
       {drawer && (
         <div className="arc-drawer">
           {groups.map(g => (
@@ -125,47 +124,49 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
         <div className="empty-state" style={{ textAlign: 'center' }}>{t.archive.noResults}</div>
       )}
 
-      {/* Archive days grouped by month */}
       {Object.entries(grouped).map(([month, days]) => (
         <div key={month} className="archive-month">
           <div className="archive-month-head">
             <span className="archive-month-lbl">{month}</span>
             <div className="archive-month-line" />
           </div>
-          {Object.entries(days).map(([, dayArticles]) => (
-            <div key={dayArticles[0].id} className="archive-day">
-              <div className="archive-day-date">
-                <div className="archive-day-weekday">
-                  {new Date(dayArticles[0].published_at).toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-GB', { weekday: 'long' })}
+          {Object.entries(days).map(([, dayArticles]) => {
+            const first = dayArticles[0]
+            const d = new Date(first.published_at)
+            const loc = lang === 'it' ? 'it-IT' : 'en-GB'
+            return (
+              <div key={first.id} className="archive-day">
+                <div className="archive-day-date">
+                  <div className="archive-day-weekday">{d.toLocaleDateString(loc, { weekday: 'long' })}</div>
+                  <div className="archive-day-num">{d.getDate()}</div>
                 </div>
-                <div className="archive-day-num">{new Date(dayArticles[0].published_at).getDate()}</div>
+                <div className="archive-day-stories">
+                  {dayArticles.map(a => {
+                    const stock = firstStock(a)
+                    const alert = firstAlert(a)
+                    const up = alert?.direction === 'up'
+                    return (
+                      <Link key={a.id} href={'/' + lang + '/article/' + a.meta_slug} className="archive-story">
+                        {stock?.symbol && (
+                          <span className="archive-story-ticker">{stock.symbol}</span>
+                        )}
+                        {alert?.change_pct != null && (
+                          <span className={'archive-story-chg ' + (up ? 'up' : 'dn')}>
+                            {up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%
+                          </span>
+                        )}
+                        <span className="archive-story-h">{a.headline}</span>
+                      </Link>
+                    )
+                  })}
+                </div>
+                <div className="archive-day-meta">
+                  <div className="archive-day-count">{dayArticles.length}</div>
+                  <div className="archive-day-count-lbl">{t.archive.stories}</div>
+                </div>
               </div>
-              <div className="archive-day-stories">
-                {dayArticles.map(a => {
-                  const stock = getStock(a)
-                  const alert = getAlert(a)
-                  const up = alert?.direction === 'up'
-                  return (
-                    <Link key={a.id} href={'/' + lang + '/article/' + a.meta_slug} className="archive-story">
-                      {stock?.symbol && (
-                        <span className="archive-story-ticker">{stock.symbol}</span>
-                      )}
-                      {alert?.change_pct != null && (
-                        <span className={'archive-story-chg ' + (up ? 'up' : 'dn')}>
-                          {up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%
-                        </span>
-                      )}
-                      <span className="archive-story-h">{a.headline}</span>
-                    </Link>
-                  )
-                })}
-              </div>
-              <div className="archive-day-meta">
-                <div className="archive-day-count">{dayArticles.length}</div>
-                <div className="archive-day-count-lbl">{t.archive.stories}</div>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       ))}
     </>
