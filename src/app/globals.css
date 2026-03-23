@@ -609,3 +609,50 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* ══ TARGETED FIXES ══ */
+
+/* Max width — centred with auto margins */
+.page {
+  max-width: 1240px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: var(--pad) !important;
+  padding-right: var(--pad) !important;
+  width: 100% !important;
+}
+
+/* Logo gold colour */
+.logo span { color: var(--gold) !important; }
+.foot-logo span { color: var(--gold) !important; }
+
+/* Line height — reduce back down */
+.art-body p { line-height: 1.72 !important; }
+
+/* Archive day rows — padding on date and stories */
+.archive-day-date {
+  padding: 16px 20px !important;
+}
+.archive-day-stories {
+  padding: 16px 20px !important;
+}
+.archive-story-h {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 600px !important;
+}
+
+/* Archive filter bar — no clipping */
+.arc-filter-bar {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  flex-wrap: nowrap !important;
+}
+.arc-filter-group {
+  flex-shrink: 0 !important;
+}
+.arc-pill {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
