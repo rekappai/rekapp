@@ -656,3 +656,23 @@ body {
   white-space: nowrap !important;
   flex-shrink: 0 !important;
 }
+
+/* ══ DEFINITIVE FIXES ══ */
+.page {
+  max-width: 1240px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: var(--pad) !important;
+  padding-right: var(--pad) !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+.logo span      { color: var(--gold) !important; }
+.foot-logo span { color: var(--gold) !important; }
+.art-body p { line-height: 1.72 !important; font-size: 0.95rem !important; }
+.archive-day-date    { padding: 16px 20px !important; }
+.archive-day-stories { padding: 16px 20px !important; }
+.arc-filter-bar   { overflow-x: auto !important; flex-wrap: nowrap !important; }
+.arc-filter-group { flex-shrink: 0 !important; }
+.arc-pill         { white-space: nowrap !important; flex-shrink: 0 !important; }
+.nav-item { font-size: 0.72rem !important; letter-spacing: 0.08em !important; }
