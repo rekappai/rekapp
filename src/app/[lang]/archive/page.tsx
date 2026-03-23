@@ -5,10 +5,17 @@ import ArchiveClient from '@/components/ArchiveClient'
 export const revalidate = 300
 
 async function getArticles(lang: string) {
-  const { data } = await supabase.from('articles')
-    .select('id, headline, meta_slug, published_at, country_code, tags, stocks(symbol, name), alerts(direction, change_pct)')
-    .eq('lang_code', lang).eq('published', true)
-    .order('published_at', { ascending: false }).limit(200)
+  const { data } = await supabase
+    .from('articles')
+    .select(`
+      id, headline, meta_slug, published_at, country_code, tags,
+      stocks ( symbol, name ),
+      alerts ( direction, change_pct )
+    `)
+    .eq('lang_code', lang)
+    .eq('published', true)
+    .order('published_at', { ascending: false })
+    .limit(200)
   return (data ?? []) as any[]
 }
 
