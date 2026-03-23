@@ -4,6 +4,7 @@ import { languages } from '@/lib/i18n'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import type { Lang } from '@/lib/i18n'
+import Script from 'next/script'
 import '../globals.css'
 
 const playfair = Playfair_Display({
@@ -47,7 +48,29 @@ export default async function LangLayout({
       lang={lang}
       className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable}`}
     >
-      <body className="bg-[--ink] text-[--text] antialiased font-[family-name:var(--font-dm-sans)]">
+      <head>
+        {/* Google Tag Manager */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PJNMR9GN');`,
+          }}
+        />
+      </head>
+      <body className="bg-[--ink] text-[--text] antialiased">
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-PJNMR9GN"
+            height="0" width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
         <Header lang={lang as Lang} />
         <main>{children}</main>
         <Footer lang={lang as Lang} />
