@@ -562,3 +562,50 @@ footer { border-top:1px solid var(--ink-border); padding:22px var(--pad); displa
 /* Archive filter mobile button - only on small screens */
 @media (min-width: 901px) { .arc-filter-mob-btn { display: none !important; } }
 @media (max-width: 900px)  { .arc-filter-bar    { display: none !important; } }
+
+/* ══════════════════════════════════════
+   FIXES
+══════════════════════════════════════ */
+
+/* 1. Max width — enforce on all pages */
+.page {
+  max-width: 1240px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: var(--pad) !important;
+  padding-right: var(--pad) !important;
+}
+
+/* 2. Nav font — bigger and more readable */
+.nav-item {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* 3. Body font — easier to read */
+body {
+  font-size: 16px;
+}
+.feed-h { font-size: 1.1rem !important; }
+.feed-p { font-size: 0.85rem !important; }
+.art-body p { font-size: 0.95rem !important; line-height: 1.85 !important; }
+
+/* 4. Archive filter bar — proper horizontal scroll, no clipping */
+.arc-filter-bar {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  width: 100%;
+}
+.arc-filter-bar::-webkit-scrollbar { display: none; }
+.arc-filter-group {
+  flex-shrink: 0 !important;
+  white-space: nowrap;
+}
+.arc-pill {
+  white-space: nowrap;
+  flex-shrink: 0;
+}

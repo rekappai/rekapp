@@ -34,7 +34,7 @@ export default function Header({ lang }: { lang: Lang }) {
           <span /><span />
         </button>
 
-        <Link href={'/' + lang} className="logo">Rekapp</Link>
+        <Link href={'/' + lang} className="logo">Rek<span>app</span></Link>
 
         <nav className="nav-primary">
           {nav.map(item => (
