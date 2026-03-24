@@ -759,3 +759,19 @@ footer {
 /* ══ RELATED — remove bottom border on last card ══ */
 .related-card:last-child { border-bottom: none !important; }
 .related-card { border-bottom: none; }
+
+/* ══ ARTICLE SUBHEADINGS ══ */
+.art-subhead {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-top: 28px;
+  margin-bottom: 12px;
+  max-width: 600px;
+}
+@media (max-width: 899px) {
+  .art-subhead { max-width: 100%; font-size: 1rem; }
+}

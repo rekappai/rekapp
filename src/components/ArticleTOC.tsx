@@ -2,6 +2,30 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Lang } from '@/lib/i18n'
 
+function renderBody(text: string) {
+  // Split on double newlines, then check each block
+  return text.split('\n\n').filter(Boolean).map((block, i) => {
+    const trimmed = block.trim()
+    if (trimmed.startsWith('## ')) {
+      // Render as h2
+      return (
+        <h2 key={i} className="art-subhead">
+          {trimmed.slice(3)}
+        </h2>
+      )
+    }
+    // Also handle single newline before ##
+    if (trimmed.startsWith('#')) {
+      return (
+        <h2 key={i} className="art-subhead">
+          {trimmed.replace(/^#+\s*/, '')}
+        </h2>
+      )
+    }
+    return <p key={i}>{trimmed}</p>
+  })
+}
+
 export default function ArticleTOC({
   lang,
   recapBody,
@@ -20,32 +44,23 @@ export default function ArticleTOC({
     explainer: lang === 'it' ? 'Cosa significa' : 'What Does It Mean',
   }
 
-  // Desktop: track scroll to highlight active section
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(e => {
-          if (e.isIntersecting) {
-            setActive(e.target.id as 'recap' | 'explainer')
-          }
+          if (e.isIntersecting) setActive(e.target.id as 'recap' | 'explainer')
         })
       },
       { threshold: 0.3 }
     )
-    if (recapRef.current)    observer.observe(recapRef.current)
+    if (recapRef.current)     observer.observe(recapRef.current)
     if (explainerRef.current) observer.observe(explainerRef.current)
     return () => observer.disconnect()
   }, [])
 
-  const scrollTo = (id: 'recap' | 'explainer') => {
-    const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    setActive(id)
-  }
-
   return (
     <>
-      {/* ── Mobile: horizontal tab bar ── */}
+      {/* Mobile tab bar */}
       {explainerBody && (
         <div className="art-toc-mob">
           <button
@@ -65,16 +80,13 @@ export default function ArticleTOC({
         </div>
       )}
 
-      {/* ── Article body ── */}
-      {/* On mobile, show/hide sections based on active tab */}
-      {/* On desktop, show both sections stacked */}
       <div
         id="recap"
         ref={recapRef}
         className={'art-toc-section' + (active === 'recap' ? ' active' : '')}
       >
         <div className="art-body">
-          {recapBody.split('\n\n').filter(Boolean).map((p, i) => <p key={i}>{p}</p>)}
+          {renderBody(recapBody)}
         </div>
       </div>
 
@@ -84,18 +96,15 @@ export default function ArticleTOC({
           ref={explainerRef}
           className={'art-toc-section' + (active === 'explainer' ? ' active' : '')}
         >
-          {/* Desktop: show the gold divider heading */}
           <div className="expl-head desktop-only">
             <span className="expl-lbl">{labels.explainer}</span>
             <div className="expl-line" />
           </div>
           <div className="art-body">
-            {explainerBody.split('\n\n').filter(Boolean).map((p, i) => <p key={i}>{p}</p>)}
+            {renderBody(explainerBody)}
           </div>
         </div>
       )}
-
-      {/* Desktop TOC — rendered in sidebar via slot, passed as prop to parent */}
     </>
   )
 }
