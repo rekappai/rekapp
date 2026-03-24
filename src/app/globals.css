@@ -730,3 +730,8 @@ footer {
   color: var(--text);
   letter-spacing: -0.01em;
 }
+
+/* ══ HIDE SIDEBAR RELATED ON MOBILE — shown in article body instead ══ */
+@media (max-width: 899px) {
+  .art-sb { display: none; }
+}
