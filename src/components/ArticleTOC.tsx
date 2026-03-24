@@ -1,31 +1,33 @@
 'use client'
-import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import type { Lang } from '@/lib/i18n'
 
 function renderBody(text: string) {
-  // First, ensure ## headings are always on their own line
-  // Handle cases where Gemini puts heading and paragraph on same line
-  const normalised = text
-    .replace(/(##[^\n]+)\n?([^#\n])/g, '$1\n\n$2')  // ensure blank line after heading
-    .replace(/([^\n])(##)/g, '$1\n\n$2')               // ensure blank line before heading
+  const lines = text.split('\n')
+  const elements: JSX.Element[] = []
+  let paraLines: string[] = []
+  let key = 0
 
-  const blocks = normalised.split('\n\n').filter(Boolean)
-  const elements: React.ReactNode[] = []
+  const flushPara = () => {
+    const para = paraLines.join(' ').trim()
+    if (para) elements.push(<p key={key++}>{para}</p>)
+    paraLines = []
+  }
 
-  blocks.forEach((block, i) => {
-    const trimmed = block.trim()
-    if (trimmed.startsWith('#')) {
-      elements.push(
-        <h2 key={i} className="art-subhead">
-          {trimmed.replace(/^#+\s*/, '')}
-        </h2>
-      )
-    } else if (trimmed) {
-      elements.push(<p key={i}>{trimmed}</p>)
+  lines.forEach(line => {
+    const trimmed = line.trim()
+    if (trimmed.match(/^#{1,3}\s+/)) {
+      flushPara()
+      const heading = trimmed.replace(/^#{1,3}\s+/, '')
+      if (heading) elements.push(<h2 key={key++} className="art-subhead">{heading}</h2>)
+    } else if (trimmed === '') {
+      flushPara()
+    } else {
+      paraLines.push(trimmed)
     }
   })
 
+  flushPara()
   return elements
 }
 
@@ -63,7 +65,6 @@ export default function ArticleTOC({
 
   return (
     <>
-      {/* Mobile tab bar */}
       {explainerBody && (
         <div className="art-toc-mob">
           <button
