@@ -17,6 +17,31 @@ async function getArticle(slug: string, lang: string) {
   return data
 }
 
+async function getAlternateSlug(alertId: string | null, stockId: string, lang: string): Promise<string | null> {
+  // Try to find the same article in the other language via alert_id first, then stock_id
+  if (alertId) {
+    const { data } = await supabase
+      .from('articles')
+      .select('meta_slug')
+      .eq('alert_id', alertId)
+      .eq('lang_code', lang)
+      .eq('published', true)
+      .single()
+    if (data?.meta_slug) return data.meta_slug
+  }
+  // Fallback: match by stock_id and language
+  const { data } = await supabase
+    .from('articles')
+    .select('meta_slug')
+    .eq('stock_id', stockId)
+    .eq('lang_code', lang)
+    .eq('published', true)
+    .order('published_at', { ascending: false })
+    .limit(1)
+    .single()
+  return data?.meta_slug ?? null
+}
+
 async function getRelated(stockId: string, lang: string, excludeSlug: string) {
   const { data } = await supabase
     .from('articles')
@@ -42,6 +67,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const stock = Array.isArray((article as any).stocks) ? (article as any).stocks[0] : (article as any).stocks
   const alert = Array.isArray((article as any).alerts) ? (article as any).alerts[0] : (article as any).alerts
   const tags = parseTags(article.tags)
+  const otherLang = lang === 'en' ? 'it' : 'en'
+
+  // Look up the correct slug in the other language
+  const altSlug = await getAlternateSlug(article.alert_id, article.stock_id, otherLang)
+  const altHref = altSlug
+    ? '/' + otherLang + '/article/' + altSlug
+    : '/' + otherLang  // fallback to home if no translation exists
+
   const related = await getRelated(article.stock_id, lang, slug)
   const up = alert?.direction === 'up'
   const cur = stock?.country_code === 'us' ? '$' : '€'
@@ -59,13 +92,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
       <div className="art-view-layout">
         <article className="art-main">
           <div className="art-kicker">
-            {stock?.country_code?.toUpperCase()} &middot; {stock?.sector} &middot; {pubDate}, {pubTime}
+            {[stock?.country_code?.toUpperCase(), stock?.sector, pubDate + ', ' + pubTime]
+              .filter(Boolean)
+              .join(' · ')}
           </div>
           <h1 className="art-h1">{article.headline}</h1>
           <div className="art-byline">
             <span>{t.article.byline}</span>
-            <span className="fact-badge">&#10003; {t.article.factChecked}</span>
+            <span className="fact-badge">{t.article.factChecked}</span>
             <span>{pubTime}</span>
+            {/* Language switcher — links to correct translated slug */}
+            <Link href={altHref} className="art-lang-switch">
+              {otherLang === 'it' ? '🇮🇹 IT' : '🇬🇧 EN'}
+            </Link>
           </div>
 
           <ArticleTOC
