@@ -8,31 +8,56 @@ async function getMovers(lang: string) {
     .select('meta_slug, headline, direction, change_pct, symbol, company_name')
     .eq('lang_code', lang)
     .eq('published', true)
+    .not('change_pct', 'is', null)
     .order('published_at', { ascending: false })
-    .limit(5)
-  return data ?? []
+    .limit(50)
+
+  if (!data?.length) return { risers: [], fallers: [] }
+
+  const risers = data
+    .filter((a: any) => a.direction === 'up')
+    .sort((a: any, b: any) => b.change_pct - a.change_pct)
+    .slice(0, 3)
+
+  const fallers = data
+    .filter((a: any) => a.direction === 'down')
+    .sort((a: any, b: any) => a.change_pct - b.change_pct)
+    .slice(0, 3)
+
+  return { risers, fallers }
+}
+
+function MoverRow({ item, lang }: { item: any; lang: string }) {
+  const up = item.direction === 'up'
+  return (
+    <Link href={'/' + lang + '/article/' + item.meta_slug} className="mover-row">
+      <span className="mover-sym">{item.symbol}</span>
+      <span className="mover-name">{item.company_name}</span>
+      <span className={'mover-chg ' + (up ? 'up' : 'dn')}>
+        {up ? '+' : ''}{Number(item.change_pct).toFixed(1)}%
+      </span>
+    </Link>
+  )
 }
 
 export default async function Sidebar({ lang }: { lang: Lang }) {
   const t = useTranslations(lang)
-  const movers = await getMovers(lang)
+  const { risers, fallers } = await getMovers(lang)
+
   return (
     <div className="feed-sidebar">
-      <div className="sb-widget">
-        <div className="sb-head">{t.sidebar.movers}</div>
-        {movers.map((item: any) => {
-          const up = item.direction === 'up'
-          return (
-            <Link key={item.meta_slug} href={'/' + lang + '/article/' + item.meta_slug} className="mover-row">
-              <span className="mover-sym">{item.symbol}</span>
-              <span className="mover-name">{item.company_name}</span>
-              <span className={'mover-chg ' + (up ? 'up' : 'dn')}>
-                {up ? '+' : ''}{Number(item.change_pct ?? 0).toFixed(1)}%
-              </span>
-            </Link>
-          )
-        })}
-      </div>
+      {risers.length > 0 && (
+        <div className="sb-widget">
+          <div className="sb-head">{lang === 'it' ? 'Maggiori rialzi' : 'Top risers'}</div>
+          {risers.map((item: any) => <MoverRow key={item.meta_slug} item={item} lang={lang} />)}
+        </div>
+      )}
+      {fallers.length > 0 && (
+        <div className="sb-widget">
+          <div className="sb-head">{lang === 'it' ? 'Maggiori ribassi' : 'Top fallers'}</div>
+          {fallers.map((item: any) => <MoverRow key={item.meta_slug} item={item} lang={lang} />)}
+        </div>
+      )}
       <div className="sb-widget">
         <div className="sb-head">{t.sidebar.indices}</div>
         <Link href={'/' + lang + '/markets'} className="read-btn">{t.sidebar.allMarkets}</Link>
