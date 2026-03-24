@@ -13,7 +13,7 @@ import type { Metadata } from 'next'
 export const revalidate = 3600
 
 const INDEX_MAP: Record<string, string> = { us: 'S&P 500', it: 'FTSE MIB' }
-const RELATED_SELECT = 'meta_slug, headline, stocks(symbol), alerts(direction, change_pct)'
+const RELATED_SELECT = 'meta_slug, headline, alert_id, stock_id, stocks(symbol), alerts!alert_id(direction, change_pct)'
 
 async function getArticle(slug: string, lang: string) {
   const { data } = await supabase
