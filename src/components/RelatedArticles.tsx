@@ -4,8 +4,9 @@ import type { Lang } from '@/lib/i18n'
 type RelatedArticle = {
   meta_slug: string
   headline: string
-  stocks?: { symbol: string } | { symbol: string }[] | null
-  alerts?: { direction: string; change_pct: number } | { direction: string; change_pct: number }[] | null
+  symbol?: string | null
+  direction?: string | null
+  change_pct?: number | null
 }
 
 export default function RelatedArticles({ articles, lang }: { articles: RelatedArticle[]; lang: Lang }) {
@@ -19,16 +20,14 @@ export default function RelatedArticles({ articles, lang }: { articles: RelatedA
       </div>
       <div className="related-grid">
         {articles.map(a => {
-          const stock = Array.isArray(a.stocks) ? a.stocks[0] : a.stocks
-          const alert = Array.isArray(a.alerts) ? a.alerts[0] : a.alerts
-          const up = alert?.direction === 'up'
+          const up = a.direction === 'up'
           return (
             <Link key={a.meta_slug} href={'/' + lang + '/article/' + a.meta_slug} className="related-card">
               <div className="related-meta">
-                {stock?.symbol && <span className="ticker-badge">{stock.symbol}</span>}
-                {alert?.change_pct != null && Number(alert.change_pct) !== 0 && (
+                {a.symbol && <span className="ticker-badge">{a.symbol}</span>}
+                {a.change_pct != null && Number(a.change_pct) !== 0 && (
                   <span className={'chg ' + (up ? 'up' : 'dn')}>
-                    {up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%
+                    {up ? '+' : ''}{Number(a.change_pct).toFixed(1)}%
                   </span>
                 )}
               </div>
