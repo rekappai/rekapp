@@ -13,12 +13,12 @@ import type { Metadata } from 'next'
 export const revalidate = 3600
 
 const INDEX_MAP: Record<string, string> = { us: 'S&P 500', it: 'FTSE MIB' }
-const RELATED_SELECT = 'meta_slug, headline, alert_id, stocks(symbol)'
+const RELATED_SELECT = 'meta_slug, headline, direction, change_pct, stocks(symbol, name)'
 
 async function getArticle(slug: string, lang: string) {
   const { data } = await supabase
     .from('articles')
-    .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts!alert_id(direction, change_pct, price_at_alert, previous_close)')
+    .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts!alert_id(price_at_alert, previous_close)')
     .eq('meta_slug', slug).eq('lang_code', lang).eq('published', true).single()
   return data
 }
@@ -55,19 +55,7 @@ async function getRelated(stockId: string, sector: string | null, lang: string, 
     }
   }
 
-  // Fetch alerts separately for accurate change_pct
-  const alertIds = results.map((a: any) => a.alert_id).filter(Boolean)
-  const alertMap: Record<string, any> = {}
-  if (alertIds.length) {
-    const { data: alertData } = await supabase
-      .from('alerts').select('id, direction, change_pct').in('id', alertIds)
-    alertData?.forEach((a: any) => { alertMap[a.id] = a })
-  }
-
-  return results.slice(0, 3).map((a: any) => ({
-    ...a,
-    alerts: alertMap[a.alert_id] ? [alertMap[a.alert_id]] : [],
-  }))
+  return results.slice(0, 3)
 }
 
 async function getAlternateSlug(alertId: string | null, stockId: string, otherLang: string): Promise<string | null> {
@@ -96,17 +84,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   if (!article) notFound()
 
   const stock = Array.isArray((article as any).stocks) ? (article as any).stocks[0] : (article as any).stocks
-  const alert = Array.isArray((article as any).alerts) ? (article as any).alerts[0] : (article as any).alerts
+  const alertData = Array.isArray((article as any).alerts) ? (article as any).alerts[0] : (article as any).alerts
   const tags = parseTags(article.tags)
   const otherLang = lang === 'en' ? 'it' : 'en'
   const altSlug = await getAlternateSlug(article.alert_id, article.stock_id, otherLang)
   const altHref = altSlug ? '/' + otherLang + '/article/' + altSlug : '/' + otherLang
   const related = await getRelated(article.stock_id, stock?.sector ?? null, lang, slug)
-  const up = alert?.direction === 'up'
-  const cur = stock?.country_code === 'us' ? '$' : '€'
+  const direction = (article as any).direction
+  const changePct = (article as any).change_pct
+  const up = direction === 'up'
+  const cur = stock?.country_code === 'us' ? '$' : '\u20ac'
   const hasExplainer = !!article.explainer_body
   const indexName = stock?.country_code ? (INDEX_MAP[stock.country_code] ?? stock.country_code.toUpperCase()) : null
-  const kicker = [indexName, stock?.sector].filter(Boolean).join(' · ')
+  const kicker = [indexName, stock?.sector].filter(Boolean).join(' \xb7 ')
 
   return (
     <div className="page">
@@ -118,7 +108,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
       <div className="art-view-layout">
         <article className="art-main">
           <div className="art-kicker">
-            {kicker}{kicker ? ' · ' : ''}<TimeDisplay iso={article.published_at} format="datetime" />
+            {kicker}{kicker ? ' \xb7 ' : ''}<TimeDisplay iso={article.published_at} format="datetime" />
           </div>
           <h1 className="art-h1">{article.headline}</h1>
           <div className="art-byline">
@@ -150,17 +140,23 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
         <aside className="art-sb">
           <ArticleTOCSidebar lang={lang as Lang} hasExplainer={hasExplainer} />
 
-          {stock && alert && (
+          {stock && (
             <div className="art-sb-sec">
               <div className="art-sb-lbl">{stock.symbol} &middot; {stock.name}</div>
-              <div className="price-big">{alert.price_at_alert ? cur + Number(alert.price_at_alert).toFixed(2) : '—'}</div>
-              <div className="price-chg" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
-                {up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%
-              </div>
+              {changePct != null && (
+                <>
+                  <div className="price-big">
+                    {alertData?.price_at_alert ? cur + Number(alertData.price_at_alert).toFixed(2) : '\u2014'}
+                  </div>
+                  <div className="price-chg" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
+                    {up ? '+' : ''}{Number(changePct).toFixed(1)}%
+                  </div>
+                </>
+              )}
               {[
-                [t.article.previousClose, alert.previous_close ? cur + Number(alert.previous_close).toFixed(2) : '—'],
+                [t.article.previousClose, alertData?.previous_close ? cur + Number(alertData.previous_close).toFixed(2) : '\u2014'],
                 [t.article.capTier, stock.cap_tier === 'large' ? t.article.large : stock.cap_tier === 'mid' ? t.article.mid : t.article.small],
-                [t.article.moveThreshold, stock.cap_tier === 'large' ? '±4.0%' : stock.cap_tier === 'mid' ? '±8.0%' : '±10.0%'],
+                [t.article.moveThreshold, stock.cap_tier === 'large' ? '\xb14.0%' : stock.cap_tier === 'mid' ? '\xb18.0%' : '\xb110.0%'],
               ].map(([l, v]) => (
                 <div key={l} className="mini-row"><span className="mini-lbl">{l}</span><span className="mini-val">{v}</span></div>
               ))}
@@ -172,14 +168,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
               <div className="art-sb-lbl">{lang === 'it' ? 'Altre storie' : 'More stories'}</div>
               {related.map((r: any) => {
                 const rs = Array.isArray(r.stocks) ? r.stocks[0] : r.stocks
-                const ra = Array.isArray(r.alerts) ? r.alerts[0] : r.alerts
+                const rup = r.direction === 'up'
                 return (
                   <Link key={r.meta_slug} href={'/' + lang + '/article/' + r.meta_slug} style={{ display:'block', marginBottom:14, textDecoration:'none' }}>
                     <div style={{ display:'flex', gap:7, alignItems:'center', marginBottom:4 }}>
                       <span className="ticker-badge" style={{ fontSize:'0.56rem' }}>{rs?.symbol}</span>
-                      <span className={'chg ' + (ra?.direction==='up'?'up':'dn')} style={{ fontSize:'0.58rem' }}>
-                        {ra?.direction==='up'?'+':''}{Number(ra?.change_pct??0).toFixed(1)}%
-                      </span>
+                      {r.change_pct != null && (
+                        <span className={'chg ' + (rup?'up':'dn')} style={{ fontSize:'0.58rem' }}>
+                          {rup?'+':''}{Number(r.change_pct).toFixed(1)}%
+                        </span>
+                      )}
                     </div>
                     <div style={{ fontFamily:'Playfair Display,serif', fontSize:'0.8rem', lineHeight:1.35, color:'var(--text)' }}>{r.headline}</div>
                   </Link>
