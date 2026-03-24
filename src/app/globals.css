@@ -681,3 +681,9 @@ footer {
   font-size: 0.65rem !important;
   letter-spacing: 0.14em !important;
 }
+
+/* ══ KICKER SIZE — match explainer label ══ */
+.art-kicker {
+  font-size: 0.65rem !important;
+  letter-spacing: 0.14em !important;
+}
