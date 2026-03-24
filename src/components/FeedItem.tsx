@@ -6,18 +6,18 @@ import TimeDisplay from '@/components/TimeDisplay'
 export default function FeedItem({ article, lang, hero = false }: { article: Article; lang: Lang; hero?: boolean }) {
   const t = useTranslations(lang)
   const stock = (article as any).stocks
-  const alert = (article as any).alerts
   const stockData = Array.isArray(stock) ? stock[0] : stock
-  const alertData = Array.isArray(alert) ? alert[0] : alert
   const tags = parseTags(article.tags).slice(0, 2)
-  const up = alertData?.direction === 'up'
+  const direction = (article as any).direction
+  const changePct = (article as any).change_pct
+  const up = direction === 'up'
 
   const Meta = () => (
     <div className="feed-meta">
       {stockData?.symbol && <span className="ticker-badge">{stockData.symbol}</span>}
-      {alertData?.change_pct != null && (
+      {changePct != null && changePct !== 0 && (
         <span className={'chg ' + (up ? 'up' : 'dn')}>
-          {up ? '\u25b4' : '\u25be'} {up ? '+' : ''}{Number(alertData.change_pct).toFixed(1)}%
+          {up ? '\u25b4' : '\u25be'} {up ? '+' : ''}{Number(changePct).toFixed(1)}%
         </span>
       )}
       {article.country_code && <span className="feed-market">{article.country_code.toUpperCase()}</span>}
