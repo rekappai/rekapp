@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   const meta = {
     en: { title: 'Archive — Rekapp', description: 'Every financial story, every market, every day. Browse the full Rekapp archive.' },
-    it: { title: 'Archivio — Rekapp', description: 'Ogni articolo finanziario, ogni mercato, ogni giorno. Sfoglia l'archivio completo di Rekapp.' },
+    it: { title: "Archivio — Rekapp", description: "Ogni articolo finanziario, ogni mercato, ogni giorno. Sfoglia l’archivio completo di Rekapp." },
   } as Record<string, { title: string; description: string }>
   return meta[lang] ?? meta.en
 }
