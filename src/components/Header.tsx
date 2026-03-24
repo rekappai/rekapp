@@ -3,18 +3,22 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { type Lang, useTranslations } from '@/lib/i18n'
+import { useAltSlug } from '@/lib/AltSlugContext'
 
 export default function Header({ lang }: { lang: Lang }) {
   const t = useTranslations(lang)
   const pathname = usePathname()
   const [mob, setMob] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const { altHref } = useAltSlug()
 
   const other = lang === 'en' ? 'it' : 'en'
   const otherFlag = lang === 'en' ? '🇮🇹' : '🇬🇧'
   const otherLabel = lang === 'en' ? 'IT' : 'EN'
   const curFlag = lang === 'en' ? '🇬🇧' : '🇮🇹'
-  const switchPath = pathname.replace('/' + lang, '/' + other)
+
+  // Use altHref if on article page, otherwise swap lang prefix
+  const switchPath = altHref ?? pathname.replace('/' + lang, '/' + other)
 
   const nav = [
     { href: '/' + lang,              label: t.nav.feed },
@@ -31,7 +35,6 @@ export default function Header({ lang }: { lang: Lang }) {
     <>
       <header>
         <div className="header-inner">
-          {/* Mobile: hamburger left, logo centre, lang right */}
           <button className={'hamburger' + (mob ? ' open' : '')} onClick={() => setMob(o => !o)} aria-label="Menu">
             <span /><span />
           </button>
@@ -40,7 +43,6 @@ export default function Header({ lang }: { lang: Lang }) {
             Rek<span>app</span>
           </Link>
 
-          {/* Desktop nav — hidden on mobile */}
           <nav className="nav-primary">
             {nav.map(item => (
               <Link key={item.href} href={item.href} className={'nav-item' + (isActive(item.href) ? ' active' : '')}>

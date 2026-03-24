@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import type { Lang } from '@/lib/i18n'
 import Script from 'next/script'
+import { AltSlugProvider } from '@/lib/AltSlugContext'
 import '../globals.css'
 
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair', display: 'swap' })
@@ -29,9 +30,11 @@ export default async function LangLayout({ children, params }: { children: React
       </head>
       <body style={{ background: 'var(--ink)', color: 'var(--text)', fontFamily: "'DM Sans', sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJNMR9GN" height="0" width="0" style={{ display: 'none', visibility: 'hidden' }} /></noscript>
-        <Header lang={lang as Lang} />
-        <main style={{ minHeight: '60vh' }}>{children}</main>
-        <Footer lang={lang as Lang} />
+        <AltSlugProvider>
+          <Header lang={lang as Lang} />
+          <main style={{ minHeight: '60vh' }}>{children}</main>
+          <Footer lang={lang as Lang} />
+        </AltSlugProvider>
       </body>
     </html>
   )

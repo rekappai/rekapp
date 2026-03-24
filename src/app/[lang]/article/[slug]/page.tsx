@@ -5,9 +5,12 @@ import { useTranslations, type Lang } from '@/lib/i18n'
 import { parseTags } from '@/lib/types'
 import ArticleTOC from '@/components/ArticleTOC'
 import ArticleTOCSidebar from '@/components/ArticleTOCSidebar'
+import AltSlugSetter from '@/components/AltSlugSetter'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
+
+const INDEX_MAP: Record<string, string> = { us: 'S&P 500', it: 'FTSE MIB' }
 
 async function getArticle(slug: string, lang: string) {
   const { data } = await supabase
@@ -15,6 +18,29 @@ async function getArticle(slug: string, lang: string) {
     .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts(direction, change_pct, price_at_alert, previous_close)')
     .eq('meta_slug', slug).eq('lang_code', lang).eq('published', true).single()
   return data
+}
+
+async function getAlternateSlug(alertId: string | null, stockId: string, otherLang: string): Promise<string | null> {
+  if (alertId) {
+    const { data } = await supabase
+      .from('articles')
+      .select('meta_slug')
+      .eq('alert_id', alertId)
+      .eq('lang_code', otherLang)
+      .eq('published', true)
+      .single()
+    if (data?.meta_slug) return data.meta_slug
+  }
+  const { data } = await supabase
+    .from('articles')
+    .select('meta_slug')
+    .eq('stock_id', stockId)
+    .eq('lang_code', otherLang)
+    .eq('published', true)
+    .order('published_at', { ascending: false })
+    .limit(1)
+    .single()
+  return data?.meta_slug ?? null
 }
 
 async function getRelated(stockId: string, lang: string, excludeSlug: string) {
@@ -42,6 +68,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const stock = Array.isArray((article as any).stocks) ? (article as any).stocks[0] : (article as any).stocks
   const alert = Array.isArray((article as any).alerts) ? (article as any).alerts[0] : (article as any).alerts
   const tags = parseTags(article.tags)
+  const otherLang = lang === 'en' ? 'it' : 'en'
+  const altSlug = await getAlternateSlug(article.alert_id, article.stock_id, otherLang)
+  const altHref = altSlug ? '/' + otherLang + '/article/' + altSlug : '/' + otherLang
   const related = await getRelated(article.stock_id, lang, slug)
   const up = alert?.direction === 'up'
   const cur = stock?.country_code === 'us' ? '$' : '€'
@@ -49,9 +78,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const pubDate = new Date(article.published_at).toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' })
   const pubTime = new Date(article.published_at).toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' })
   const hasExplainer = !!article.explainer_body
+  const indexName = stock?.country_code ? (INDEX_MAP[stock.country_code] ?? stock.country_code.toUpperCase()) : null
 
   return (
     <div className="page">
+      {/* Sets the alternate slug in context so the header lang switcher uses it */}
+      <AltSlugSetter href={altHref} />
+
       <div className="back-row">
         <Link href={'/' + lang} className="back-btn">{t.article.back}</Link>
         <div className="back-line" />
@@ -59,7 +92,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
       <div className="art-view-layout">
         <article className="art-main">
           <div className="art-kicker">
-            {[stock?.country_code?.toUpperCase(), stock?.sector, pubDate + ', ' + pubTime]
+            {[indexName, stock?.sector, pubDate + ', ' + pubTime]
               .filter(Boolean)
               .join(' · ')}
           </div>
