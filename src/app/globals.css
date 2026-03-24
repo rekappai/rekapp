@@ -649,3 +649,9 @@ footer {
   color: var(--gold);
   border-color: var(--gold-border);
 }
+
+/* ══ BACK ROW — hide line on mobile ══ */
+@media (max-width: 899px) {
+  .back-line { display: none; }
+  .back-row { padding: 14px 0; }
+}
