@@ -655,3 +655,29 @@ footer {
   .back-line { display: none; }
   .back-row { padding: 14px 0; }
 }
+
+/* ══ TOC FIXES ══ */
+
+/* Hide desktop sidebar TOC on mobile */
+@media (max-width: 899px) {
+  .art-toc-sb { display: none; }
+}
+
+/* Bigger tab font on mobile */
+@media (max-width: 899px) {
+  .art-toc-mob-btn {
+    font-size: 0.68rem !important;
+    letter-spacing: 0.08em !important;
+    padding: 13px 20px 13px 0 !important;
+  }
+  .art-toc-dot {
+    width: 5px !important;
+    height: 5px !important;
+  }
+}
+
+/* Bigger "What Does It Mean" divider on desktop */
+.expl-lbl {
+  font-size: 0.65rem !important;
+  letter-spacing: 0.14em !important;
+}
