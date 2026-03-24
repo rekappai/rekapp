@@ -22,11 +22,11 @@ async function getMovers(lang: string) {
     .in('id', alertIds)
 
   const alertMap: Record<string, any> = {}
-  alerts?.forEach((a: any) => { alertMap[a.id] = a })
+  alerts?.forEach((a: any) => { alertMap[String(a.id)] = a })
 
   return articles.map((a: any) => ({
     ...a,
-    alert: alertMap[a.alert_id] ?? null,
+    alert: alertMap[String(a.alert_id)] ?? null,
   }))
 }
 
