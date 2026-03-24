@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 async function getMovers(lang: string) {
   const { data } = await supabase
     .from('articles')
-    .select('meta_slug, headline, stocks(symbol, name), alerts(direction, change_pct)')
+    .select('meta_slug, headline, stocks(symbol, name), alerts!inner(direction, change_pct)')
     .eq('lang_code', lang)
     .eq('published', true)
     .order('published_at', { ascending: false })

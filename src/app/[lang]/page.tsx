@@ -9,7 +9,7 @@ export const revalidate = 60
 async function getArticles(lang: string) {
   const { data } = await supabase
     .from('articles')
-    .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts(direction, change_pct, price_at_alert, previous_close, triggered_at)')
+    .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts!inner(direction, change_pct, price_at_alert, previous_close, triggered_at)')
     .eq('lang_code', lang).eq('published', true)
     .order('published_at', { ascending: false }).limit(50)
   return data ?? []
@@ -18,7 +18,7 @@ async function getArticles(lang: string) {
 async function getTicker() {
   const { data } = await supabase
     .from('articles')
-    .select('stocks(symbol), alerts(direction, change_pct)')
+    .select('stocks(symbol), alerts!inner(direction, change_pct)')
     .eq('published', true)
     .order('published_at', { ascending: false }).limit(20)
   return data ?? []
