@@ -6,6 +6,7 @@ import { parseTags } from '@/lib/types'
 import ArticleTOC from '@/components/ArticleTOC'
 import ArticleTOCSidebar from '@/components/ArticleTOCSidebar'
 import AltSlugSetter from '@/components/AltSlugSetter'
+import TimeDisplay from '@/components/TimeDisplay'
 import RelatedArticles from '@/components/RelatedArticles'
 import type { Metadata } from 'next'
 
@@ -129,9 +130,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const related = await getRelated(article.stock_id, stock?.sector ?? null, lang, slug)
   const up = alert?.direction === 'up'
   const cur = stock?.country_code === 'us' ? '$' : '€'
-  const loc = lang === 'it' ? 'it-IT' : 'en-GB'
-  const pubDate = new Date(article.published_at).toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' })
-  const pubTime = new Date(article.published_at).toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' })
   const hasExplainer = !!article.explainer_body
   const indexName = stock?.country_code ? (INDEX_MAP[stock.country_code] ?? stock.country_code.toUpperCase()) : null
 
