@@ -1,10 +1,10 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import type { Lang } from '@/lib/i18n'
 
 function renderBody(text: string) {
   const lines = text.split('\n')
-  const elements: JSX.Element[] = []
+  const elements: React.ReactElement[] = []
   let paraLines: string[] = []
   let key = 0
 
