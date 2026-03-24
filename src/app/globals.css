@@ -521,3 +521,92 @@ footer {
     flex-basis: 100% !important;
   }
 }
+
+/* ══ ARTICLE TOC ══ */
+
+/* Mobile tab bar */
+.art-toc-mob {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--ink-border);
+  margin-bottom: 24px;
+}
+.art-toc-mob-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 20px 11px 0;
+  margin-right: 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.art-toc-mob-btn:hover { color: var(--text); }
+.art-toc-mob-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+.art-toc-mob-btn.active .art-toc-dot { background: var(--gold); }
+.art-toc-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--ink-border); flex-shrink: 0;
+  transition: background 0.15s;
+}
+.art-toc-mob-btn:hover .art-toc-dot { background: var(--gold); }
+
+/* Mobile: hide inactive section */
+.art-toc-section { display: block; }
+@media (max-width: 899px) {
+  .art-toc-section { display: none; }
+  .art-toc-section.active { display: block; }
+  .desktop-only { display: none !important; }
+}
+/* Desktop: always show both, hide mobile tab bar */
+@media (min-width: 900px) {
+  .art-toc-mob { display: none; }
+  .art-toc-section { display: block !important; }
+}
+
+/* Desktop TOC sidebar */
+.art-toc-sb {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ink-border);
+}
+.art-toc-sb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ink-border);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.art-toc-sb-item:last-child { border-bottom: none; }
+.art-toc-sb-item:hover { color: var(--text); }
+.art-toc-sb-item.active { color: var(--gold); }
+.art-toc-sb-item.active .art-toc-sb-dot { background: var(--gold); }
+.art-toc-sb-item:hover .art-toc-sb-dot { background: var(--gold); }
+.art-toc-sb-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--ink-border); flex-shrink: 0;
+  transition: background 0.15s;
+}
+.art-toc-sb-label { flex: 1; }
