@@ -30,6 +30,7 @@ export default function Header({ lang }: { lang: Lang }) {
   return (
     <>
       <header>
+        <div className="header-inner">
         <button className={'hamburger' + (mob ? ' open' : '')} onClick={() => setMob(o => !o)} aria-label="Menu">
           <span /><span />
         </button>
@@ -60,6 +61,7 @@ export default function Header({ lang }: { lang: Lang }) {
             )}
           </div>
           <div className="live-badge"><span className="live-dot" />Live</div>
+        </div>
         </div>
       </header>
 

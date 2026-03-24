@@ -5,8 +5,10 @@ export default function Footer({ lang }: { lang: Lang }) {
   const t = useTranslations(lang)
   return (
     <footer>
+      <div className="footer-inner">
       <Link href={'/' + lang} className="foot-logo">Rek<span>app</span></Link>
       <span className="foot-copy">© {new Date().getFullYear()} Rekapp · {t.footer.copy}</span>
+      </div>
     </footer>
   )
 }
