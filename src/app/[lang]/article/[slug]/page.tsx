@@ -13,7 +13,7 @@ import type { Metadata } from 'next'
 export const revalidate = 3600
 
 const INDEX_MAP: Record<string, string> = { us: 'S&P 500', it: 'FTSE MIB' }
-const RELATED_SELECT = 'meta_slug, headline, alert_id, stock_id, stocks(symbol), alerts!alert_id(direction, change_pct)'
+const RELATED_SELECT = 'meta_slug, headline, alert_id, stocks(symbol)'
 
 async function getArticle(slug: string, lang: string) {
   const { data } = await supabase
@@ -55,7 +55,19 @@ async function getRelated(stockId: string, sector: string | null, lang: string, 
     }
   }
 
-  return results.slice(0, 3)
+  // Fetch alerts separately for accurate change_pct
+  const alertIds = results.map((a: any) => a.alert_id).filter(Boolean)
+  const alertMap: Record<string, any> = {}
+  if (alertIds.length) {
+    const { data: alertData } = await supabase
+      .from('alerts').select('id, direction, change_pct').in('id', alertIds)
+    alertData?.forEach((a: any) => { alertMap[a.id] = a })
+  }
+
+  return results.slice(0, 3).map((a: any) => ({
+    ...a,
+    alerts: alertMap[a.alert_id] ? [alertMap[a.alert_id]] : [],
+  }))
 }
 
 async function getAlternateSlug(alertId: string | null, stockId: string, otherLang: string): Promise<string | null> {

@@ -3,24 +3,44 @@ import { type Lang, useTranslations } from '@/lib/i18n'
 import { supabase } from '@/lib/supabase'
 
 async function getMovers(lang: string) {
-  const { data } = await supabase
+  // Step 1: get latest articles with stock info
+  const { data: articles } = await supabase
     .from('articles')
-    .select('headline, meta_slug, stocks(symbol, name), alerts!alert_id(direction, change_pct)')
-    .eq('lang_code', lang).eq('published', true)
-    .order('published_at', { ascending: false }).limit(5)
-  return data ?? []
+    .select('meta_slug, headline, alert_id, stocks(symbol, name)')
+    .eq('lang_code', lang)
+    .eq('published', true)
+    .order('published_at', { ascending: false })
+    .limit(5)
+
+  if (!articles?.length) return []
+
+  // Step 2: fetch the alerts by id
+  const alertIds = articles.map((a: any) => a.alert_id).filter(Boolean)
+  const { data: alerts } = await supabase
+    .from('alerts')
+    .select('id, direction, change_pct')
+    .in('id', alertIds)
+
+  const alertMap: Record<string, any> = {}
+  alerts?.forEach((a: any) => { alertMap[a.id] = a })
+
+  return articles.map((a: any) => ({
+    ...a,
+    alert: alertMap[a.alert_id] ?? null,
+  }))
 }
 
 export default async function Sidebar({ lang }: { lang: Lang }) {
   const t = useTranslations(lang)
   const movers = await getMovers(lang)
+
   return (
     <div className="feed-sidebar">
       <div className="sb-widget">
         <div className="sb-head">{t.sidebar.movers}</div>
         {movers.map((item: any) => {
-          const alert = Array.isArray(item.alerts) ? item.alerts[0] : item.alerts
           const stock = Array.isArray(item.stocks) ? item.stocks[0] : item.stocks
+          const alert = item.alert
           const up = alert?.direction === 'up'
           return (
             <Link key={item.meta_slug} href={'/' + lang + '/article/' + item.meta_slug} className="mover-row">
