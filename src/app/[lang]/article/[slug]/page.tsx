@@ -6,14 +6,13 @@ import { parseTags } from '@/lib/types'
 import ArticleTOC from '@/components/ArticleTOC'
 import ArticleTOCSidebar from '@/components/ArticleTOCSidebar'
 import AltSlugSetter from '@/components/AltSlugSetter'
-import TimeDisplay from '@/components/TimeDisplay'
 import RelatedArticles from '@/components/RelatedArticles'
+import TimeDisplay from '@/components/TimeDisplay'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
 
 const INDEX_MAP: Record<string, string> = { us: 'S&P 500', it: 'FTSE MIB' }
-
 const RELATED_SELECT = 'meta_slug, headline, stocks(symbol), alerts(direction, change_pct)'
 
 async function getArticle(slug: string, lang: string) {
@@ -24,70 +23,35 @@ async function getArticle(slug: string, lang: string) {
   return data
 }
 
-async function getRelated(
-  stockId: string,
-  sector: string | null,
-  lang: string,
-  excludeSlug: string
-) {
+async function getRelated(stockId: string, sector: string | null, lang: string, excludeSlug: string) {
   const results: any[] = []
   const excludeSlugs = [excludeSlug]
 
-  // Rule 1: same stock, up to 2
   if (stockId) {
-    const { data } = await supabase
-      .from('articles')
-      .select(RELATED_SELECT)
-      .eq('stock_id', stockId)
-      .eq('lang_code', lang)
-      .eq('published', true)
-      .neq('meta_slug', excludeSlug)
-      .order('published_at', { ascending: false })
-      .limit(2)
-    if (data?.length) {
-      results.push(...data)
-      excludeSlugs.push(...data.map((a: any) => a.meta_slug))
-    }
+    const { data } = await supabase.from('articles').select(RELATED_SELECT)
+      .eq('stock_id', stockId).eq('lang_code', lang).eq('published', true)
+      .neq('meta_slug', excludeSlug).order('published_at', { ascending: false }).limit(2)
+    if (data?.length) { results.push(...data); excludeSlugs.push(...data.map((a: any) => a.meta_slug)) }
   }
 
-  // Rule 2: same sector, fill up to 3
   if (results.length < 3 && sector) {
     const needed = 3 - results.length
-    let q = supabase
-      .from('articles')
-      .select(RELATED_SELECT + ', stocks!inner(sector)')
-      .eq('lang_code', lang)
-      .eq('published', true)
-      .eq('stocks.sector', sector)
-      .order('published_at', { ascending: false })
-      .limit(needed + excludeSlugs.length)
-
-    const { data } = await q
+    const { data } = await supabase.from('articles').select(RELATED_SELECT + ', stocks!inner(sector)')
+      .eq('lang_code', lang).eq('published', true).eq('stocks.sector', sector)
+      .order('published_at', { ascending: false }).limit(needed + excludeSlugs.length)
     if (data?.length) {
-      const filtered = data
-        .filter((a: any) => !excludeSlugs.includes(a.meta_slug))
-        .slice(0, needed)
-      results.push(...filtered)
-      excludeSlugs.push(...filtered.map((a: any) => a.meta_slug))
+      const filtered = data.filter((a: any) => !excludeSlugs.includes(a.meta_slug)).slice(0, needed)
+      results.push(...filtered); excludeSlugs.push(...filtered.map((a: any) => a.meta_slug))
     }
   }
 
-  // Rule 3: anything recent, fill up to 3
   if (results.length < 3) {
     const needed = 3 - results.length
-    const { data } = await supabase
-      .from('articles')
-      .select(RELATED_SELECT)
-      .eq('lang_code', lang)
-      .eq('published', true)
-      .order('published_at', { ascending: false })
-      .limit(needed + excludeSlugs.length)
-
+    const { data } = await supabase.from('articles').select(RELATED_SELECT)
+      .eq('lang_code', lang).eq('published', true)
+      .order('published_at', { ascending: false }).limit(needed + excludeSlugs.length)
     if (data?.length) {
-      const filtered = data
-        .filter((a: any) => !excludeSlugs.includes(a.meta_slug))
-        .slice(0, needed)
-      results.push(...filtered)
+      results.push(...data.filter((a: any) => !excludeSlugs.includes(a.meta_slug)).slice(0, needed))
     }
   }
 
@@ -96,13 +60,11 @@ async function getRelated(
 
 async function getAlternateSlug(alertId: string | null, stockId: string, otherLang: string): Promise<string | null> {
   if (alertId) {
-    const { data } = await supabase
-      .from('articles').select('meta_slug')
+    const { data } = await supabase.from('articles').select('meta_slug')
       .eq('alert_id', alertId).eq('lang_code', otherLang).eq('published', true).single()
     if (data?.meta_slug) return data.meta_slug
   }
-  const { data } = await supabase
-    .from('articles').select('meta_slug')
+  const { data } = await supabase.from('articles').select('meta_slug')
     .eq('stock_id', stockId).eq('lang_code', otherLang).eq('published', true)
     .order('published_at', { ascending: false }).limit(1).single()
   return data?.meta_slug ?? null
@@ -132,6 +94,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const cur = stock?.country_code === 'us' ? '$' : '€'
   const hasExplainer = !!article.explainer_body
   const indexName = stock?.country_code ? (INDEX_MAP[stock.country_code] ?? stock.country_code.toUpperCase()) : null
+  const kicker = [indexName, stock?.sector].filter(Boolean).join(' · ')
 
   return (
     <div className="page">
@@ -143,13 +106,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
       <div className="art-view-layout">
         <article className="art-main">
           <div className="art-kicker">
-            {[indexName, stock?.sector, pubDate + ', ' + pubTime].filter(Boolean).join(' · ')}
+            {kicker}{kicker ? ' · ' : ''}<TimeDisplay iso={article.published_at} format="datetime" />
           </div>
           <h1 className="art-h1">{article.headline}</h1>
           <div className="art-byline">
             <span>{t.article.byline}</span>
             <span className="fact-badge">{t.article.factChecked}</span>
-            <span>{pubTime}</span>
+            <TimeDisplay iso={article.published_at} format="time" />
           </div>
 
           <ArticleTOC
@@ -169,7 +132,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
             </div>
           )}
 
-          {/* Related articles — visible on mobile (sidebar hidden) and desktop */}
           <RelatedArticles articles={related} lang={lang as Lang} />
         </article>
 
@@ -193,7 +155,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
             </div>
           )}
 
-          {/* Related in sidebar on desktop */}
           {related.length > 0 && (
             <div className="art-sb-sec">
               <div className="art-sb-lbl">{lang === 'it' ? 'Altre storie' : 'More stories'}</div>
