@@ -490,3 +490,34 @@ footer {
 }
 @media (max-width: 640px)  { .footer-inner { padding-left: 16px; padding-right: 16px; } }
 @media (min-width: 641px) and (max-width: 1024px) { .footer-inner { padding-left: 24px; padding-right: 24px; } }
+
+/* ══ ARCHIVE MOBILE FIX ══ */
+@media (max-width: 640px) {
+  .archive-day {
+    grid-template-columns: 64px 1fr !important;
+  }
+  .archive-day-meta { display: none !important; }
+  .archive-day-date {
+    padding: 12px 12px !important;
+  }
+  .archive-day-stories {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    padding: 12px 12px !important;
+    gap: 10px !important;
+  }
+  .archive-story {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: baseline !important;
+    gap: 6px !important;
+  }
+  .archive-story-h {
+    display: block !important;
+    white-space: normal !important;
+    font-size: 0.78rem !important;
+    line-height: 1.35 !important;
+    color: var(--text-dim) !important;
+    flex-basis: 100% !important;
+  }
+}
