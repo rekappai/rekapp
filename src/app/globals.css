@@ -610,3 +610,25 @@ footer {
   transition: background 0.15s;
 }
 .art-toc-sb-label { flex: 1; }
+
+/* ══ HEADER MOBILE FIX ══ */
+@media (max-width: 900px) {
+  .header-inner {
+    position: relative;
+  }
+  .header-inner .logo {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    pointer-events: auto;
+  }
+  .header-inner .nav-primary { display: none; }
+  .header-inner .live-badge { display: none; }
+  .header-inner .header-right { margin-left: auto; }
+}
+@media (min-width: 901px) {
+  .header-inner .logo {
+    position: static !important;
+    transform: none !important;
+  }
+}

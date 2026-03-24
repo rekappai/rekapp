@@ -44,7 +44,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const tags = parseTags(article.tags)
   const related = await getRelated(article.stock_id, lang, slug)
   const up = alert?.direction === 'up'
-  const cur = stock?.country_code === 'us' ? '$' : '\u20ac'
+  const cur = stock?.country_code === 'us' ? '$' : '€'
   const loc = lang === 'it' ? 'it-IT' : 'en-GB'
   const pubDate = new Date(article.published_at).toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' })
   const pubTime = new Date(article.published_at).toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' })
@@ -58,11 +58,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
       </div>
       <div className="art-view-layout">
         <article className="art-main">
-          <div className="art-kicker">{stock?.country_code?.toUpperCase()} \u00b7 {stock?.sector} \u00b7 {pubDate}, {pubTime}</div>
+          <div className="art-kicker">
+            {stock?.country_code?.toUpperCase()} &middot; {stock?.sector} &middot; {pubDate}, {pubTime}
+          </div>
           <h1 className="art-h1">{article.headline}</h1>
           <div className="art-byline">
             <span>{t.article.byline}</span>
-            <span className="fact-badge">\u2713 {t.article.factChecked}</span>
+            <span className="fact-badge">&#10003; {t.article.factChecked}</span>
             <span>{pubTime}</span>
           </div>
 
@@ -85,20 +87,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
         </article>
 
         <aside className="art-sb">
-          {/* TOC — desktop sidebar */}
           <ArticleTOCSidebar lang={lang as Lang} hasExplainer={hasExplainer} />
 
           {stock && alert && (
             <div className="art-sb-sec">
-              <div className="art-sb-lbl">{stock.symbol} \u00b7 {stock.name}</div>
-              <div className="price-big">{alert.price_at_alert ? cur + Number(alert.price_at_alert).toFixed(2) : '\u2014'}</div>
+              <div className="art-sb-lbl">{stock.symbol} &middot; {stock.name}</div>
+              <div className="price-big">{alert.price_at_alert ? cur + Number(alert.price_at_alert).toFixed(2) : '—'}</div>
               <div className="price-chg" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
                 {up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%
               </div>
               {[
-                [t.article.previousClose, alert.previous_close ? cur + Number(alert.previous_close).toFixed(2) : '\u2014'],
+                [t.article.previousClose, alert.previous_close ? cur + Number(alert.previous_close).toFixed(2) : '—'],
                 [t.article.capTier, stock.cap_tier === 'large' ? t.article.large : stock.cap_tier === 'mid' ? t.article.mid : t.article.small],
-                [t.article.moveThreshold, stock.cap_tier === 'large' ? '\u00b14.0%' : stock.cap_tier === 'mid' ? '\u00b18.0%' : '\u00b110.0%'],
+                [t.article.moveThreshold, stock.cap_tier === 'large' ? '±4.0%' : stock.cap_tier === 'mid' ? '±8.0%' : '±10.0%'],
               ].map(([l, v]) => (
                 <div key={l} className="mini-row"><span className="mini-lbl">{l}</span><span className="mini-val">{v}</span></div>
               ))}

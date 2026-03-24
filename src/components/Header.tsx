@@ -17,7 +17,7 @@ export default function Header({ lang }: { lang: Lang }) {
   const switchPath = pathname.replace('/' + lang, '/' + other)
 
   const nav = [
-    { href: '/' + lang,           label: t.nav.feed },
+    { href: '/' + lang,              label: t.nav.feed },
     { href: '/' + lang + '/markets', label: t.nav.markets },
     { href: '/' + lang + '/topics',  label: t.nav.topics },
     { href: '/' + lang + '/archive', label: t.nav.archive },
@@ -31,37 +31,41 @@ export default function Header({ lang }: { lang: Lang }) {
     <>
       <header>
         <div className="header-inner">
-        <button className={'hamburger' + (mob ? ' open' : '')} onClick={() => setMob(o => !o)} aria-label="Menu">
-          <span /><span />
-        </button>
+          {/* Mobile: hamburger left, logo centre, lang right */}
+          <button className={'hamburger' + (mob ? ' open' : '')} onClick={() => setMob(o => !o)} aria-label="Menu">
+            <span /><span />
+          </button>
 
-        <Link href={'/' + lang} className="logo">Rek<span>app</span></Link>
+          <Link href={'/' + lang} className="logo" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+            Rek<span>app</span>
+          </Link>
 
-        <nav className="nav-primary">
-          {nav.map(item => (
-            <Link key={item.href} href={item.href} className={'nav-item' + (isActive(item.href) ? ' active' : '')}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+          {/* Desktop nav — hidden on mobile */}
+          <nav className="nav-primary">
+            {nav.map(item => (
+              <Link key={item.href} href={item.href} className={'nav-item' + (isActive(item.href) ? ' active' : '')}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
-        <div className="header-right">
-          <div className="lang-wrap">
-            <button className={'lang-btn' + (langOpen ? ' open' : '')} onClick={() => setLangOpen(o => !o)}>
-              <span>{curFlag}</span>
-              <span>{lang.toUpperCase()}</span>
-              <span className="lang-caret">▼</span>
-            </button>
-            {langOpen && (
-              <div className="lang-drop open">
-                <Link href={switchPath} className="lang-opt" onClick={() => setLangOpen(false)}>
-                  {otherFlag} {otherLabel}
-                </Link>
-              </div>
-            )}
+          <div className="header-right">
+            <div className="lang-wrap">
+              <button className={'lang-btn' + (langOpen ? ' open' : '')} onClick={() => setLangOpen(o => !o)}>
+                <span>{curFlag}</span>
+                <span>{lang.toUpperCase()}</span>
+                <span className="lang-caret">&#9660;</span>
+              </button>
+              {langOpen && (
+                <div className="lang-drop open">
+                  <Link href={switchPath} className="lang-opt" onClick={() => setLangOpen(false)}>
+                    {otherFlag} {otherLabel}
+                  </Link>
+                </div>
+              )}
+            </div>
+            <div className="live-badge"><span className="live-dot" />Live</div>
           </div>
-          <div className="live-badge"><span className="live-dot" />Live</div>
-        </div>
         </div>
       </header>
 
