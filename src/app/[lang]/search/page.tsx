@@ -13,6 +13,16 @@ async function search(query: string, lang: string) {
   return data ?? []
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  const meta = {
+    en: { title: 'Search — Rekapp', description: 'Search financial news by ticker or keyword across S&P 500 and FTSE MIB.' },
+    it: { title: 'Cerca — Rekapp', description: 'Cerca notizie finanziarie per ticker o parola chiave su S&P 500 e FTSE MIB.' },
+  } as Record<string, { title: string; description: string }>
+  return meta[lang] ?? meta.en
+}
+
+
 export default async function SearchPage({ params, searchParams }: { params: Promise<{ lang: string }>; searchParams: Promise<{ q?: string }> }) {
   const { lang } = await params
   const { q } = await searchParams

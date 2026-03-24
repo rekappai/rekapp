@@ -15,6 +15,16 @@ async function getArticles(lang: string, tag?: string) {
   return data ?? []
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  const meta = {
+    en: { title: 'Topics — Rekapp', description: 'Browse financial stories by topic: earnings, analysts, AI, energy, banks and more.' },
+    it: { title: 'Argomenti — Rekapp', description: 'Sfoglia le storie finanziarie per argomento: utili, analisti, IA, energia, banche e altro.' },
+  } as Record<string, { title: string; description: string }>
+  return meta[lang] ?? meta.en
+}
+
+
 export default async function TopicsPage({ params, searchParams }: { params: Promise<{ lang: string }>; searchParams: Promise<{ tag?: string }> }) {
   const { lang } = await params
   const { tag } = await searchParams

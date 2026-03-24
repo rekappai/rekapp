@@ -18,6 +18,16 @@ async function getLatest(code: string, lang: string) {
   return data?.[0]?.headline ?? null
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  const meta = {
+    en: { title: 'Markets — Rekapp', description: 'Financial intelligence across global indices. S&P 500, FTSE MIB and more.' },
+    it: { title: 'Mercati — Rekapp', description: 'Intelligenza finanziaria sui principali indici globali. S&P 500, FTSE MIB e altri.' },
+  } as Record<string, { title: string; description: string }>
+  return meta[lang] ?? meta.en
+}
+
+
 export default async function MarketsPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   const t = useTranslations(lang as Lang)

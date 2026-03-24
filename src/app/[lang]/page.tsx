@@ -24,6 +24,16 @@ async function getTicker() {
   return data ?? []
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  const meta = {
+    en: { title: 'Rekapp — Financial Intelligence, Live', description: 'AI-generated financial news for S&P 500 and FTSE MIB. Real-time alerts, bilingual articles, fact-checked.' },
+    it: { title: 'Rekapp — Intelligenza Finanziaria in Tempo Reale', description: 'Notizie finanziarie generate dall'IA per S&P 500 e FTSE MIB. Aggiornamenti in tempo reale, articoli bilingue, verificati.' },
+  } as Record<string, { title: string; description: string }>
+  return meta[lang] ?? meta.en
+}
+
+
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   const t = useTranslations(lang as Lang)
