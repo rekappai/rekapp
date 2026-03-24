@@ -735,3 +735,16 @@ footer {
 @media (max-width: 899px) {
   .art-sb { display: none; }
 }
+
+/* ══ RELATED ARTICLES — fix double lines on mobile ══ */
+.related-articles .sec-head {
+  padding-top: 32px;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.related-articles .related-grid {
+  border-top: none;
+}
+.related-card:first-child {
+  border-top: 1px solid var(--ink-border);
+}
