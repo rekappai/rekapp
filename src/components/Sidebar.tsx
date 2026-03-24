@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { type Lang, useTranslations } from '@/lib/i18n'
-export const revalidate = 60
+export const revalidate = 0
 import { supabase } from '@/lib/supabase'
 
 async function getMovers(lang: string) {
