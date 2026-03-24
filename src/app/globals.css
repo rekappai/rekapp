@@ -755,3 +755,7 @@ footer {
 .related-articles .related-grid { border-top: none; }
 .related-card { border-top: 1px solid var(--ink-border); }
 .related-card:last-child { border-bottom: 1px solid var(--ink-border); }
+
+/* ══ RELATED — remove bottom border on last card ══ */
+.related-card:last-child { border-bottom: none !important; }
+.related-card { border-bottom: none; }
