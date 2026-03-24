@@ -79,3 +79,4 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   )
 }
 export const dynamic = "force-dynamic"
+export const revalidate = 0
