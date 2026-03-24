@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import type { Lang } from '@/lib/i18n'
-import { useTranslations } from '@/lib/i18n'
 
 type RelatedArticle = {
   meta_slug: string
@@ -9,14 +8,7 @@ type RelatedArticle = {
   alerts?: { direction: string; change_pct: number } | { direction: string; change_pct: number }[] | null
 }
 
-export default function RelatedArticles({
-  articles,
-  lang,
-}: {
-  articles: RelatedArticle[]
-  lang: Lang
-}) {
-  const t = useTranslations(lang)
+export default function RelatedArticles({ articles, lang }: { articles: RelatedArticle[]; lang: Lang }) {
   if (!articles.length) return null
 
   return (
@@ -34,7 +26,7 @@ export default function RelatedArticles({
             <Link key={a.meta_slug} href={'/' + lang + '/article/' + a.meta_slug} className="related-card">
               <div className="related-meta">
                 {stock?.symbol && <span className="ticker-badge">{stock.symbol}</span>}
-                {alert?.change_pct != null && (
+                {alert?.change_pct != null && Number(alert.change_pct) !== 0 && (
                   <span className={'chg ' + (up ? 'up' : 'dn')}>
                     {up ? '+' : ''}{Number(alert.change_pct).toFixed(1)}%
                   </span>

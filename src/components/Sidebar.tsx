@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 async function getMovers(lang: string) {
   const { data } = await supabase
     .from('articles')
-    .select('headline, meta_slug, stocks(symbol, name), alerts(direction, change_pct)')
+    .select('headline, meta_slug, stocks(symbol, name), alerts!alert_id(direction, change_pct)')
     .eq('lang_code', lang).eq('published', true)
     .order('published_at', { ascending: false }).limit(5)
   return data ?? []
@@ -19,13 +19,15 @@ export default async function Sidebar({ lang }: { lang: Lang }) {
       <div className="sb-widget">
         <div className="sb-head">{t.sidebar.movers}</div>
         {movers.map((item: any) => {
-          const up = item.alerts?.direction === 'up'
+          const alert = Array.isArray(item.alerts) ? item.alerts[0] : item.alerts
+          const stock = Array.isArray(item.stocks) ? item.stocks[0] : item.stocks
+          const up = alert?.direction === 'up'
           return (
             <Link key={item.meta_slug} href={'/' + lang + '/article/' + item.meta_slug} className="mover-row">
-              <span className="mover-sym">{item.stocks?.symbol}</span>
-              <span className="mover-name">{item.stocks?.name}</span>
+              <span className="mover-sym">{stock?.symbol}</span>
+              <span className="mover-name">{stock?.name}</span>
               <span className={'mover-chg ' + (up ? 'up' : 'dn')}>
-                {up ? '+' : ''}{Number(item.alerts?.change_pct ?? 0).toFixed(1)}%
+                {up ? '+' : ''}{Number(alert?.change_pct ?? 0).toFixed(1)}%
               </span>
             </Link>
           )
