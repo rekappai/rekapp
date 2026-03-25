@@ -7,12 +7,11 @@ export const revalidate = 120
 
 async function getArticles(lang: string, tag?: string) {
   if (tag) {
-    const { data } = await supabase
-      .rpc('articles_by_tag', { tag_name: tag, lang })
+    const { data } = await supabase.rpc('articles_by_tag', { tag_name: tag, lang })
     return data ?? []
   }
   const { data } = await supabase.from('articles')
-    .select('*, stocks(symbol, name, sector, cap_tier, country_code)')
+    .select('*')
     .eq('lang_code', lang).eq('published', true)
     .order('published_at', { ascending: false }).limit(20)
   return data ?? []
@@ -56,7 +55,7 @@ export default async function TopicsPage({ params, searchParams }: { params: Pro
     getAvailableTags(lang),
   ])
 
-  const topics = availableTags.map(slug => ({
+  const topics = availableTags.map((slug: string) => ({
     slug,
     label: (t.topics as any)[slug] ?? slug,
   }))
@@ -67,9 +66,13 @@ export default async function TopicsPage({ params, searchParams }: { params: Pro
         <h1 className="page-title">{t.topics.title}</h1>
         <TopicsClient lang={lang as Lang} activeTag={tag} topics={topics} />
       </div>
-      <div style={{ borderTop:'1px solid var(--ink-border)' }}>
-        {articles.map((a: any, i: number) => <FeedItem key={a.id} article={a} lang={lang as Lang} hero={i === 0} />)}
-        {articles.length === 0 && <div className="empty-state">{t.archive.noResults}</div>}
+      <div style={{ borderTop: '1px solid var(--ink-border)' }}>
+        {articles.map((a: any, i: number) => (
+          <FeedItem key={a.id} article={a} lang={lang as Lang} hero={i === 0} />
+        ))}
+        {articles.length === 0 && (
+          <div className="empty-state">{t.archive.noResults}</div>
+        )}
       </div>
     </div>
   )
