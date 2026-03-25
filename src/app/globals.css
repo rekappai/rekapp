@@ -265,10 +265,10 @@ header {
    MARKETS
 ═══════════════════════════════════ */
 .mkt-directory { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:8px; }
-.mkt-card { background:var(--ink); padding:20px; cursor:pointer; transition:background 0.12s; text-decoration:none; color:inherit; display:block; width:280px; flex:0 0 280px; }
+.mkt-card { background:var(--ink-card); border:1px solid var(--ink-border); padding:20px; cursor:pointer; transition:background 0.12s; text-decoration:none; color:inherit; display:block; min-width:260px; flex:1 1 260px; max-width:380px; }
 .mkt-card:hover { background:var(--ink-hover); }
 .mkt-card-soon { cursor:default; opacity:0.45; }
-.mkt-card-soon:hover { background:var(--ink); }
+.mkt-card-soon:hover { background:var(--ink-card); }
 .mkt-directory-dim { margin-bottom:48px; }
 .mkt-card-flag { font-size:1.4rem; margin-bottom:6px; line-height:1; }
 .mkt-card-name { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:400; color:var(--text); letter-spacing:-0.01em; }
