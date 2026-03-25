@@ -50,6 +50,7 @@ export default function FeedItem({ article, lang, hero = false }: { article: Art
     <Link href={'/' + lang + '/article/' + article.meta_slug} className="feed-item">
       <div className="feed-time-col">
         <TimeDisplay iso={article.published_at} format="time" className="feed-time" />
+        <TimeDisplay iso={article.published_at} format="date-short" className="feed-date" />
         <span className="feed-dot" />
       </div>
       <div className="feed-content">
