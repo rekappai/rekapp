@@ -6,12 +6,15 @@ import TopicsClient from '@/components/TopicsClient'
 export const revalidate = 120
 
 async function getArticles(lang: string, tag?: string) {
-  let q = supabase.from('articles')
+  if (tag) {
+    const { data } = await supabase
+      .rpc('articles_by_tag', { tag_name: tag, lang })
+    return data ?? []
+  }
+  const { data } = await supabase.from('articles')
     .select('*, stocks(symbol, name, sector, cap_tier, country_code)')
     .eq('lang_code', lang).eq('published', true)
     .order('published_at', { ascending: false }).limit(20)
-  if (tag) q = q.textSearch('tags', tag)
-  const { data } = await q
   return data ?? []
 }
 
