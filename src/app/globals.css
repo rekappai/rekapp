@@ -259,7 +259,7 @@ header {
 .search-box button:hover { color:var(--gold); }
 
 @media (max-width:900px) { .feed-layout { grid-template-columns:1fr; } .feed-col { border-right:none; } .feed-sidebar { display:none; } }
-@media (max-width:599px) { .feed-time-col { width:48px; } .feed-content.hero { padding:20px; } .feed-h.hero { font-size:1.25rem; } }
+@media (max-width:599px) { .feed-time-col { width:56px; } .feed-content.hero { padding:20px; } .feed-h.hero { font-size:1.25rem; } }
 
 /* ═══════════════════════════════════
    MARKETS
@@ -776,7 +776,3 @@ footer {
   .art-subhead { max-width: 100%; font-size: 1rem; }
 }
 
-/* ══ FEED TIME COL — mobile padding ══ */
-@media (max-width: 699px) {
-  .feed-time-col { padding-left: 16px; }
-}
