@@ -294,7 +294,7 @@ header {
 ═══════════════════════════════════ */
 .page-header { padding:32px 0 28px; border-bottom:1px solid var(--ink-border); }
 .page-title { font-family:'Playfair Display',serif; font-size:clamp(1.5rem,2.5vw,2.2rem); font-weight:400; letter-spacing:-0.02em; color:var(--text); }
-.page-sub { font-size:0.85rem; color:var(--text-dim); max-width:480px; margin-top:6px; line-height:1.6; }
+.page-sub { font-size:0.85rem; color:var(--text-dim); max-width:700px; margin-top:6px; line-height:1.6; }
 
 /* ═══════════════════════════════════
    TOPICS
