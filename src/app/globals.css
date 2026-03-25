@@ -287,7 +287,7 @@ header {
 .mkt-card-stat-lbl { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); }
 .mkt-card-foot { font-size:0.72rem; color:var(--text-dim); border-top:1px solid var(--ink-border); padding-top:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 @media (max-width:899px) { .mkt-directory { grid-template-columns:repeat(2,1fr); } }
-@media (max-width:480px) { .mkt-directory { grid-template-columns:1fr; } .mkt-card-soon { display:none; } }
+@media (max-width:480px) { .mkt-directory { grid-template-columns:1fr; } }
 
 /* ═══════════════════════════════════
    PAGE HEADERS
