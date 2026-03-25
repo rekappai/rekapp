@@ -775,3 +775,8 @@ footer {
 @media (max-width: 899px) {
   .art-subhead { max-width: 100%; font-size: 1rem; }
 }
+
+/* ══ FEED TIME COL — mobile padding ══ */
+@media (max-width: 699px) {
+  .feed-time-col { padding-left: 16px; }
+}

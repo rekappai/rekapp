@@ -21,7 +21,6 @@ export default function FeedItem({ article, lang, hero = false }: { article: Art
         </span>
       )}
       {article.country_code && <span className="feed-market">{article.country_code.toUpperCase()}</span>}
-      <TimeDisplay iso={article.published_at} format="time" className="card-time" />
     </div>
   )
 
