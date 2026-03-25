@@ -37,7 +37,7 @@ export default function FeedItem({ article, lang, hero = false }: { article: Art
         <div className="feed-content hero">
           <Meta />
           <div className="feed-h hero">{article.headline}</div>
-          {article.body && <div className="feed-p hero">{article.body.slice(0, 280)}</div>}
+          {article.body && <div className="feed-p hero">{article.body.split('\n').filter((l: string) => !l.startsWith('#')).join(' ').slice(0, 280)}</div>}
           <div className="feed-foot">
             <span className="read-btn">{t.feed.readMore}</span>
             <Tags />
@@ -56,7 +56,7 @@ export default function FeedItem({ article, lang, hero = false }: { article: Art
       <div className="feed-content">
         <Meta />
         <div className="feed-h">{article.headline}</div>
-        {article.body && <div className="feed-p">{article.body.slice(0, 160)}</div>}
+        {article.body && <div className="feed-p">{article.body.split('\n').filter((l: string) => !l.startsWith('#')).join(' ').slice(0, 160)}</div>}
         <div className="feed-foot">
           <span className="read-btn">{t.feed.readMore}</span>
           <Tags />
