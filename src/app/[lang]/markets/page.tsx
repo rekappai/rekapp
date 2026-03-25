@@ -144,7 +144,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
       )}
 
       <div className="sec-head" style={{ marginTop: 16 }}><span className="sec-lbl">{t.markets.soon}</span><div className="sec-line" /></div>
-      <div className="mkt-directory mkt-directory-dim" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))' }}>
+      <div className="mkt-directory mkt-directory-dim">
         {soon.map(c => (
           <div key={c.code} className="mkt-card mkt-card-soon">
             <div className="mkt-card-flag">{c.flag}</div>

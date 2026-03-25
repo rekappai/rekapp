@@ -264,7 +264,7 @@ header {
 /* ═══════════════════════════════════
    MARKETS
 ═══════════════════════════════════ */
-.mkt-directory { display:flex; flex-wrap:wrap; gap:1px; background:var(--ink-border); border:1px solid var(--ink-border); }
+.mkt-directory { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:8px; }
 .mkt-card { background:var(--ink); padding:20px; cursor:pointer; transition:background 0.12s; text-decoration:none; color:inherit; display:block; width:280px; flex:0 0 280px; }
 .mkt-card:hover { background:var(--ink-hover); }
 .mkt-card-soon { cursor:default; opacity:0.45; }
