@@ -25,20 +25,15 @@ const INDEX_SYMBOLS: Record<string, string> = {
 }
 
 async function getIndexPerformance(country: string) {
-  const sym = INDEX_SYMBOLS[country]
-  if (!sym) return null
   try {
     const res = await fetch(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,
-      { headers: { 'User-Agent': 'Mozilla/5.0' }, next: { revalidate: 60 } }
+      'https://www.rekapp.ai/api/index-performance',
+      { next: { revalidate: 60 } }
     )
-    const data = await res.json()
-    const meta = data?.chart?.result?.[0]?.meta
-    if (!meta) return null
-    const price = meta.regularMarketPrice
-    const prev = meta.chartPreviousClose
-    const change_pct = prev ? Math.round(((price - prev) / prev) * 10000) / 100 : 0
-    return { price, change_pct }
+    const all = await res.json()
+    const found = all.find((d: any) => d.country === country)
+    if (!found) return null
+    return { price: found.price, change_pct: found.change_pct }
   } catch { return null }
 }
 
