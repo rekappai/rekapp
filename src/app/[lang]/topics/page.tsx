@@ -17,24 +17,10 @@ async function getArticles(lang: string, tag?: string) {
   return data ?? []
 }
 
-async function getAvailableTags(lang: string): Promise<string[]> {
-  const { data } = await supabase
-    .from('articles')
-    .select('tags')
-    .eq('lang_code', lang)
-    .eq('published', true)
-
+async function getTrendingTags(lang: string): Promise<{ slug: string; label: string }[]> {
+  const { data } = await supabase.rpc('trending_tags', { lang })
   if (!data?.length) return []
-
-  const tagSet = new Set<string>()
-  data.forEach((a: any) => {
-    try {
-      const tags = typeof a.tags === 'string' ? JSON.parse(a.tags) : a.tags
-      if (Array.isArray(tags)) tags.forEach((t: string) => tagSet.add(t))
-    } catch {}
-  })
-
-  return Array.from(tagSet).sort()
+  return data.map((r: any) => ({ slug: r.tag, label: r.tag }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
@@ -50,20 +36,15 @@ export default async function TopicsPage({ params, searchParams }: { params: Pro
   const { lang } = await params
   const { tag } = await searchParams
   const t = useTranslations(lang as Lang)
-  const [articles, availableTags] = await Promise.all([
+  const [articles, topics] = await Promise.all([
     getArticles(lang, tag),
-    getAvailableTags(lang),
+    getTrendingTags(lang),
   ])
-
-  const topics = availableTags.map((slug: string) => ({
-    slug,
-    label: (t.topics as any)[slug] ?? slug,
-  }))
 
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title">{t.topics.title}</h1>
+        <h1 className="page-title">{lang === 'it' ? 'In tendenza' : 'Trending'}</h1>
         <TopicsClient lang={lang as Lang} activeTag={tag} topics={topics} />
       </div>
       <div style={{ borderTop: '1px solid var(--ink-border)' }}>

@@ -782,3 +782,18 @@ footer {
 
 /* ══ FEED DATE ══ */
 .feed-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--text-dim); opacity:0.6; text-align:center; line-height:1.2; }
+
+/* ══ TOPICS CLOUD — horizontal scroll on mobile ══ */
+@media (max-width: 899px) {
+  .topics-cloud {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .topics-cloud::-webkit-scrollbar { display: none; }
+  .topic-pill { flex-shrink: 0; }
+}
