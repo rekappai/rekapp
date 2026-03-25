@@ -7,7 +7,7 @@ export default function TimeDisplay({
   className,
 }: {
   iso: string
-  format?: 'time' | 'datetime' | 'date' | 'date-short'
+  format?: 'time' | 'datetime' | 'date' | 'date-short' | 'date-short'
   className?: string
 }) {
   const [display, setDisplay] = useState<string>('')
@@ -36,6 +36,11 @@ export default function TimeDisplay({
         day: 'numeric',
         month: 'long',
         year: 'numeric',
+      })
+    } else if (format === 'date-short') {
+      formatted = date.toLocaleDateString(locale, {
+        day: 'numeric',
+        month: 'short',
       })
     } else if (format === 'date-short') {
       formatted = date.toLocaleDateString(locale, {
