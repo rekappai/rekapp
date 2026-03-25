@@ -128,7 +128,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
       {openMarkets.length > 0 && (
         <>
           <div className="sec-head"><span className="sec-lbl">{lang === 'it' ? 'Mercati aperti' : 'Open now'}</span><div className="sec-line" /></div>
-          <div className="mkt-directory" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))' }}>
+          <div className="mkt-directory" style={{}}>
             {openMarkets.map(c => renderCard(c))}
           </div>
         </>
@@ -137,7 +137,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
       {closedMarkets.length > 0 && (
         <>
           <div className="sec-head" style={{ marginTop: 16 }}><span className="sec-lbl">{lang === 'it' ? 'Mercati chiusi' : 'Closed'}</span><div className="sec-line" /></div>
-          <div className="mkt-directory" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))' }}>
+          <div className="mkt-directory" style={{}}>
             {closedMarkets.map(c => renderCard(c))}
           </div>
         </>
