@@ -264,8 +264,8 @@ header {
 /* ═══════════════════════════════════
    MARKETS
 ═══════════════════════════════════ */
-.mkt-directory { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,280px)); gap:1px; background:var(--ink-border); border:1px solid var(--ink-border); }
-.mkt-card { background:var(--ink); padding:20px; cursor:pointer; transition:background 0.12s; text-decoration:none; color:inherit; display:block; }
+.mkt-directory { display:flex; flex-wrap:wrap; gap:1px; background:var(--ink-border); border:1px solid var(--ink-border); }
+.mkt-card { background:var(--ink); padding:20px; cursor:pointer; transition:background 0.12s; text-decoration:none; color:inherit; display:block; width:280px; flex:0 0 280px; }
 .mkt-card:hover { background:var(--ink-hover); }
 .mkt-card-soon { cursor:default; opacity:0.45; }
 .mkt-card-soon:hover { background:var(--ink); }
@@ -292,7 +292,7 @@ header {
 /* ═══════════════════════════════════
    PAGE HEADERS
 ═══════════════════════════════════ */
-.page-header { padding:32px 0 28px; }
+.page-header { padding:32px 0 20px; }
 .page-title { font-family:'Playfair Display',serif; font-size:clamp(1.5rem,2.5vw,2.2rem); font-weight:400; letter-spacing:-0.02em; color:var(--text); }
 .page-sub { font-size:0.85rem; color:var(--text-dim); max-width:700px; margin-top:6px; line-height:1.6; }
 
