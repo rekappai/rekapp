@@ -9,9 +9,7 @@ function isMarketOpen(timezone: string, openHour: number, closeHour: number): bo
   const now = new Date()
   const local = new Date(now.toLocaleString('en-US', { timeZone: timezone }))
   const day = local.getDay()
-  const hour = local.getHours()
-  const min = local.getMinutes()
-  const time = hour + min / 60
+  const time = local.getHours() + local.getMinutes() / 60
   if (day === 0 || day === 6) return false
   return time >= openHour && time < closeHour
 }
@@ -21,9 +19,13 @@ const MARKET_HOURS: Record<string, { timezone: string; open: number; close: numb
   it: { timezone: 'Europe/Rome', open: 9, close: 17.5 },
 }
 
-async function getIndexPerformance(country: string): Promise<{ price: number; change_pct: number } | null> {
-  const symbols: Record<string, string> = { us: '%5EGSPC', it: 'FTSEMIB.MI' }
-  const sym = symbols[country]
+const INDEX_SYMBOLS: Record<string, string> = {
+  us: '%5EGSPC',
+  it: 'FTSEMIB.MI',
+}
+
+async function getIndexPerformance(country: string) {
+  const sym = INDEX_SYMBOLS[country]
   if (!sym) return null
   try {
     const res = await fetch(
@@ -72,22 +74,26 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
   const active = COUNTRIES.filter(c => c.active)
   const soon = COUNTRIES.filter(c => !c.active)
 
-  const stats: Record<string, { count: number; latest: string | null; open: boolean; index: { price: number; change_pct: number } | null }> = {}
+  const stats: Record<string, any> = {}
   await Promise.all(active.map(async c => {
-    const [count, latest] = await Promise.all([getCount(c.code, lang), getLatest(c.code, lang)])
+    const [count, latest, index] = await Promise.all([
+      getCount(c.code, lang),
+      getLatest(c.code, lang),
+      getIndexPerformance(c.code),
+    ])
     const hours = MARKET_HOURS[c.code]
     const open = hours ? isMarketOpen(hours.timezone, hours.open, hours.close) : false
-    const index = await getIndexPerformance(c.code)
     stats[c.code] = { count, latest, open, index }
   }))
 
   const openMarkets = active.filter(c => stats[c.code]?.open)
   const closedMarkets = active.filter(c => !stats[c.code]?.open)
 
-  const MarketCard = ({ c }: { c: typeof active[0] }) => {
+  const renderCard = (c: typeof active[0]) => {
     const s = stats[c.code]
+    const cur = c.code === 'us' ? '$' : '€'
     return (
-      <Link href={'/' + lang + '/markets/' + c.code} className="mkt-card">
+      <Link key={c.code} href={'/' + lang + '/markets/' + c.code} className="mkt-card">
         <div className="mkt-card-head">
           <div>
             <div className="mkt-card-flag">{c.flag}</div>
@@ -98,6 +104,14 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
             {s.open ? t.markets.status.open : t.markets.status.closed}
           </span>
         </div>
+        {s.index && (
+          <div className="index-perf">
+            <span className="index-perf-price">{cur}{Number(s.index.price).toLocaleString()}</span>
+            <span className={'index-perf-chg ' + (s.index.change_pct >= 0 ? 'up' : 'dn')}>
+              {s.index.change_pct >= 0 ? '+' : ''}{s.index.change_pct.toFixed(2)}%
+            </span>
+          </div>
+        )}
         <div className="mkt-card-stats">
           <div className="mkt-card-stat">
             <div className="mkt-card-stat-val">{s.count}</div>
@@ -120,7 +134,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
         <>
           <div className="sec-head"><span className="sec-lbl">{lang === 'it' ? 'Mercati aperti' : 'Open now'}</span><div className="sec-line" /></div>
           <div className="mkt-directory" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))' }}>
-            {openMarkets.map(c => <MarketCard key={c.code} c={c} />)}
+            {openMarkets.map(c => renderCard(c))}
           </div>
         </>
       )}
@@ -129,7 +143,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
         <>
           <div className="sec-head" style={{ marginTop: 16 }}><span className="sec-lbl">{lang === 'it' ? 'Mercati chiusi' : 'Closed'}</span><div className="sec-line" /></div>
           <div className="mkt-directory" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))' }}>
-            {closedMarkets.map(c => <MarketCard key={c.code} c={c} />)}
+            {closedMarkets.map(c => renderCard(c))}
           </div>
         </>
       )}
