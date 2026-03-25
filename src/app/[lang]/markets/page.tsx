@@ -61,39 +61,59 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
     stats[c.code] = { count, latest, open }
   }))
 
+  const openMarkets = active.filter(c => stats[c.code]?.open)
+  const closedMarkets = active.filter(c => !stats[c.code]?.open)
+
+  const MarketCard = ({ c }: { c: typeof active[0] }) => {
+    const s = stats[c.code]
+    return (
+      <Link href={'/' + lang + '/markets/' + c.code} className="mkt-card">
+        <div className="mkt-card-head">
+          <div>
+            <div className="mkt-card-flag">{c.flag}</div>
+            <div className="mkt-card-name">{c.index}</div>
+            <div className="mkt-card-country">{c.name}</div>
+          </div>
+          <span className={'mkt-card-status ' + (s.open ? 'open' : 'closed')}>
+            {s.open ? t.markets.status.open : t.markets.status.closed}
+          </span>
+        </div>
+        <div className="mkt-card-stats">
+          <div className="mkt-card-stat">
+            <div className="mkt-card-stat-val">{s.count}</div>
+            <div className="mkt-card-stat-lbl">{t.markets.stat.stories} {lang === 'it' ? 'oggi' : 'today'}</div>
+          </div>
+        </div>
+        {s.latest && <div className="mkt-card-foot">{lang === 'it' ? 'Ultimo:' : 'Latest:'} {s.latest}</div>}
+      </Link>
+    )
+  }
+
   return (
     <div className="page">
       <div className="page-header">
         <h1 className="page-title">{t.markets.title}</h1>
         <p className="page-sub">{t.markets.sub}</p>
       </div>
-      <div className="sec-head"><span className="sec-lbl">{t.markets.active}</span><div className="sec-line" /></div>
-      <div className="mkt-directory" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))' }}>
-        {active.map(c => {
-          const s = stats[c.code]
-          return (
-            <Link key={c.code} href={'/' + lang + '/markets/' + c.code} className="mkt-card">
-              <div className="mkt-card-head">
-                <div>
-                  <div className="mkt-card-flag">{c.flag}</div>
-                  <div className="mkt-card-name">{c.index}</div>
-                  <div className="mkt-card-country">{c.name}</div>
-                </div>
-                <span className={'mkt-card-status ' + (s.open ? 'open' : 'closed')}>
-                  {s.open ? t.markets.status.open : t.markets.status.closed}
-                </span>
-              </div>
-              <div className="mkt-card-stats">
-                <div className="mkt-card-stat">
-                  <div className="mkt-card-stat-val">{s.count}</div>
-                  <div className="mkt-card-stat-lbl">{t.markets.stat.stories} {lang === 'it' ? 'oggi' : 'today'}</div>
-                </div>
-              </div>
-              {s.latest && <div className="mkt-card-foot">{lang === 'it' ? 'Ultimo:' : 'Latest:'} {s.latest}</div>}
-            </Link>
-          )
-        })}
-      </div>
+
+      {openMarkets.length > 0 && (
+        <>
+          <div className="sec-head"><span className="sec-lbl">{lang === 'it' ? 'Mercati aperti' : 'Open now'}</span><div className="sec-line" /></div>
+          <div className="mkt-directory" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))' }}>
+            {openMarkets.map(c => <MarketCard key={c.code} c={c} />)}
+          </div>
+        </>
+      )}
+
+      {closedMarkets.length > 0 && (
+        <>
+          <div className="sec-head" style={{ marginTop: 16 }}><span className="sec-lbl">{lang === 'it' ? 'Mercati chiusi' : 'Closed'}</span><div className="sec-line" /></div>
+          <div className="mkt-directory" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))' }}>
+            {closedMarkets.map(c => <MarketCard key={c.code} c={c} />)}
+          </div>
+        </>
+      )}
+
       <div className="sec-head" style={{ marginTop: 16 }}><span className="sec-lbl">{t.markets.soon}</span><div className="sec-line" /></div>
       <div className="mkt-directory mkt-directory-dim" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))' }}>
         {soon.map(c => (
