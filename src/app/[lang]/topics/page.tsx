@@ -68,7 +68,7 @@ export default async function TopicsPage({ params, searchParams }: { params: Pro
         <TopicsClient lang={lang as Lang} activeTag={tag} topics={topics} />
       </div>
       <div style={{ borderTop:'1px solid var(--ink-border)' }}>
-        {articles.map((a, i) => <FeedItem key={a.id} article={a} lang={lang as Lang} hero={i === 0} />)}
+        {articles.map((a: any, i: number) => <FeedItem key={a.id} article={a} lang={lang as Lang} hero={i === 0} />)}
         {articles.length === 0 && <div className="empty-state">{t.archive.noResults}</div>}
       </div>
     </div>
