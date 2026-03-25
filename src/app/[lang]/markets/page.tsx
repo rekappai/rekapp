@@ -2,7 +2,6 @@ import { supabase } from '@/lib/supabase'
 import { useTranslations, type Lang } from '@/lib/i18n'
 import { COUNTRIES } from '@/lib/countries'
 import Link from 'next/link'
-import IndexPerformance from '@/components/IndexPerformance'
 
 export const revalidate = 300
 
@@ -20,6 +19,25 @@ function isMarketOpen(timezone: string, openHour: number, closeHour: number): bo
 const MARKET_HOURS: Record<string, { timezone: string; open: number; close: number }> = {
   us: { timezone: 'America/New_York', open: 9.5, close: 16 },
   it: { timezone: 'Europe/Rome', open: 9, close: 17.5 },
+}
+
+async function getIndexPerformance(country: string): Promise<{ price: number; change_pct: number } | null> {
+  const symbols: Record<string, string> = { us: '%5EGSPC', it: 'FTSEMIB.MI' }
+  const sym = symbols[country]
+  if (!sym) return null
+  try {
+    const res = await fetch(
+      `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,
+      { headers: { 'User-Agent': 'Mozilla/5.0' }, next: { revalidate: 60 } }
+    )
+    const data = await res.json()
+    const meta = data?.chart?.result?.[0]?.meta
+    if (!meta) return null
+    const price = meta.regularMarketPrice
+    const prev = meta.chartPreviousClose
+    const change_pct = prev ? Math.round(((price - prev) / prev) * 10000) / 100 : 0
+    return { price, change_pct }
+  } catch { return null }
 }
 
 async function getCount(code: string, lang: string) {
@@ -54,12 +72,13 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
   const active = COUNTRIES.filter(c => c.active)
   const soon = COUNTRIES.filter(c => !c.active)
 
-  const stats: Record<string, { count: number; latest: string | null; open: boolean }> = {}
+  const stats: Record<string, { count: number; latest: string | null; open: boolean; index: { price: number; change_pct: number } | null }> = {}
   await Promise.all(active.map(async c => {
     const [count, latest] = await Promise.all([getCount(c.code, lang), getLatest(c.code, lang)])
     const hours = MARKET_HOURS[c.code]
     const open = hours ? isMarketOpen(hours.timezone, hours.open, hours.close) : false
-    stats[c.code] = { count, latest, open }
+    const index = await getIndexPerformance(c.code)
+    stats[c.code] = { count, latest, open, index }
   }))
 
   const openMarkets = active.filter(c => stats[c.code]?.open)
