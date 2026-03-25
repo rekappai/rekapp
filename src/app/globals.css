@@ -797,3 +797,9 @@ footer {
   .topics-cloud::-webkit-scrollbar { display: none; }
   .topic-pill { flex-shrink: 0; }
 }
+
+/* ══ INDEX PERFORMANCE ══ */
+.index-perf { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.index-perf-name { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--text-dim); letter-spacing:0.05em; }
+.index-perf-price { font-family:'DM Mono',monospace; font-size:0.85rem; color:var(--text); }
+.index-perf-chg { font-family:'DM Mono',monospace; font-size:0.8rem; }

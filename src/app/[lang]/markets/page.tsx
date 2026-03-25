@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { useTranslations, type Lang } from '@/lib/i18n'
 import { COUNTRIES } from '@/lib/countries'
 import Link from 'next/link'
+import IndexPerformance from '@/components/IndexPerformance'
 
 export const revalidate = 300
 
