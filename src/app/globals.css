@@ -803,3 +803,8 @@ footer {
 .index-perf-name { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--text-dim); letter-spacing:0.05em; }
 .index-perf-price { font-family:'DM Mono',monospace; font-size:0.85rem; color:var(--text); }
 .index-perf-chg { font-family:'DM Mono',monospace; font-size:0.8rem; }
+
+/* ══ SHARE BUTTONS ══ */
+.share-buttons { display:flex; gap:8px; margin-top:24px; }
+.share-btn { display:flex; align-items:center; justify-content:center; width:34px; height:34px; border:0.5px solid var(--ink-border); border-radius:4px; text-decoration:none; color:var(--text-dim); transition:color 0.12s, border-color 0.12s; }
+.share-btn:hover { color:var(--text); border-color:var(--text-dim); }

@@ -8,6 +8,7 @@ import ArticleTOCSidebar from '@/components/ArticleTOCSidebar'
 import AltSlugSetter from '@/components/AltSlugSetter'
 import RelatedArticles from '@/components/RelatedArticles'
 import TimeDisplay from '@/components/TimeDisplay'
+import ShareButtons from '@/components/ShareButtons'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -134,6 +135,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
             </div>
           )}
 
+          <ShareButtons url={`https://www.rekapp.ai/${lang}/article/${slug}`} title={article.headline} />
           <RelatedArticles articles={related} lang={lang as Lang} />
         </article>
 
