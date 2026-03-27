@@ -112,6 +112,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
             {kicker}{kicker ? ' \xb7 ' : ''}<TimeDisplay iso={article.published_at} format="datetime" />
           </div>
           <h1 className="art-h1">{article.headline}</h1>
+          <ShareButtons url={`https://www.rekapp.ai/${lang}/article/${slug}`} title={article.headline} />
           <div className="art-byline">
             <span>{t.article.byline}</span>
             <span className="fact-badge">{t.article.factChecked}</span>
