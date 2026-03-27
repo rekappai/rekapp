@@ -117,6 +117,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
             <span className="fact-badge">{t.article.factChecked}</span>
             <TimeDisplay iso={article.published_at} format="time" />
           </div>
+          <ShareButtons url={`https://www.rekapp.ai/${lang}/article/${slug}`} title={article.headline} />
 
           <ArticleTOC
             lang={lang as Lang}
