@@ -137,7 +137,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
             </div>
           )}
 
-          <ShareButtons url={`https://www.rekapp.ai/${lang}/article/${slug}`} title={article.headline} />
           <RelatedArticles articles={related} lang={lang as Lang} />
         </article>
 
