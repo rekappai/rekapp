@@ -1385,3 +1385,12 @@ Copy
     align-items: flex-start;
   }
 }
+
+/* ══ SIDEBAR ON MOBILE — show below feed ══ */
+@media (max-width: 900px) {
+  .feed-sidebar {
+    display: block !important;
+    padding: 24px 0 !important;
+    border-top: 1px solid var(--ink-border);
+  }
+}
