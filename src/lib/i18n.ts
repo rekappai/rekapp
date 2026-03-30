@@ -28,6 +28,8 @@ export const ui = {
       search: 'Search',
       topics: 'Topics',
       allMarkets: 'All markets →',
+      risers: 'Top risers',
+      fallers: 'Top fallers',
     },
     markets: {
       title: 'Markets',
@@ -126,6 +128,8 @@ export const ui = {
       search: 'Cerca',
       topics: 'Argomenti',
       allMarkets: 'Tutti i mercati →',
+      risers: 'Maggiori rialzi',
+      fallers: 'Maggiori ribassi',
     },
     markets: {
       title: 'Mercati',
@@ -224,6 +228,8 @@ export const ui = {
       search: 'Recherche',
       topics: 'Thèmes',
       allMarkets: 'Tous les marchés →',
+      risers: 'Plus fortes hausses',
+      fallers: 'Plus fortes baisses',
     },
     markets: {
       title: 'Marchés',

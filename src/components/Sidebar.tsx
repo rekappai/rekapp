@@ -48,13 +48,13 @@ export default async function Sidebar({ lang }: { lang: Lang }) {
     <div className="feed-sidebar">
       {risers.length > 0 && (
         <div className="sb-widget">
-          <div className="sb-head">{lang === 'it' ? 'Maggiori rialzi' : 'Top risers'}</div>
+          <div className="sb-head">{t.sidebar.risers}</div>
           {risers.map((item: any) => <MoverRow key={item.meta_slug} item={item} lang={lang} />)}
         </div>
       )}
       {fallers.length > 0 && (
         <div className="sb-widget">
-          <div className="sb-head">{lang === 'it' ? 'Maggiori ribassi' : 'Top fallers'}</div>
+          <div className="sb-head">{t.sidebar.fallers}</div>
           {fallers.map((item: any) => <MoverRow key={item.meta_slug} item={item} lang={lang} />)}
         </div>
       )}
