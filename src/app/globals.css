@@ -846,3 +846,33 @@ Copy
   color: var(--gold);
 }
  
+/* ══ LOAD MORE ══ */
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0 48px;
+  border-top: 1px solid var(--ink-border);
+}
+
+.load-more-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: none;
+  border: 1px solid var(--gold-border);
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.load-more-btn:hover {
+  background: var(--ink-raised);
+  border-color: var(--gold);
+}
+
+.load-more-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

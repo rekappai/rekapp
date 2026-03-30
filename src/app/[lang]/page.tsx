@@ -3,6 +3,7 @@ import { useTranslations, type Lang } from '@/lib/i18n'
 import FeedItem from '@/components/FeedItem'
 import Sidebar from '@/components/Sidebar'
 import Ticker from '@/components/Ticker'
+import LoadMore from '@/components/LoadMore'
 
 export const revalidate = 60
 
@@ -11,7 +12,7 @@ async function getArticles(lang: string) {
     .from('articles')
     .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts!alert_id(direction, change_pct, price_at_alert, previous_close, triggered_at)')
     .eq('lang_code', lang).eq('published', true)
-    .order('published_at', { ascending: false }).limit(50)
+    .order('published_at', { ascending: false }).limit(20)
   return data ?? []
 }
 

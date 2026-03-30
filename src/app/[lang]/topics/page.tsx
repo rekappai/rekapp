@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { useTranslations, type Lang } from '@/lib/i18n'
 import FeedItem from '@/components/FeedItem'
 import TopicsClient from '@/components/TopicsClient'
+import LoadMore from '@/components/LoadMore'
 
 export const revalidate = 120
 
@@ -54,6 +55,7 @@ export default async function TopicsPage({ params, searchParams }: { params: Pro
         {articles.length === 0 && (
           <div className="empty-state">{t.archive.noResults}</div>
         )}
+        <LoadMore lang={lang as Lang} initialCount={articles.length} tag={tag} />
       </div>
     </div>
   )
