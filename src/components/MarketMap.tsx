@@ -259,7 +259,7 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
     : lang === 'fr' ? 'La couverture arrive bientôt.'
     : 'Coverage is coming soon.'
 
-  const latestLabel = lang === 'it' ? 'Ultimo' : lang === 'fr' ? 'Dernier' : 'Latest'
+  const latestLabel = lang === 'it' ? 'Ultima notizia' : lang === 'fr' ? 'Dernière actu' : 'Latest'
   const hoursLabel = lang === 'it' ? 'Orari' : lang === 'fr' ? 'Horaires' : 'Hours'
   const closeLabel = lang === 'it' ? 'Ultima chiusura' : lang === 'fr' ? 'Dernière clôture' : 'Last close'
   const changeLabel = lang === 'it' ? 'Variazione' : lang === 'fr' ? 'Variation' : 'Change'
