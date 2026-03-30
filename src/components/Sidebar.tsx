@@ -77,7 +77,7 @@ export default async function Sidebar({ lang }: { lang: Lang }) {
       )}
       {pulse.length > 0 && (
         <div className="sb-widget">
-          <div className="sb-head">{lang === 'it' ? 'Polso dei mercati' : 'Market pulse'}</div>
+          <div className="sb-head">{lang === 'it' ? 'Sintesi dei mercati' : lang === 'fr' ? 'Synthèse des marchés' : 'Market pulse'}</div>
           {pulse.map((p: any) => (
             <div key={p.country_code} className="pulse-item">
               <div className="pulse-head">
