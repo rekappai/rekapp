@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { useTranslations, type Lang } from '@/lib/i18n'
 import { COUNTRIES, getCountryName } from '@/lib/countries'
 import Link from 'next/link'
+import MarketMap from '@/components/MarketMap'
 
 export const revalidate = 300
 
@@ -84,6 +85,9 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
     stats[c.code] = { count, latest, open, index }
   }))
 
+  const latestHeadlines: Record<string, string> = {}
+  active.forEach(c => { if (stats[c.code]?.latest) latestHeadlines[c.code] = stats[c.code].latest })
+
   const openMarkets = active.filter(c => stats[c.code]?.open)
   const closedMarkets = active.filter(c => !stats[c.code]?.open)
 
@@ -127,6 +131,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
         <h1 className="page-title">{t.markets.title}</h1>
         <p className="page-sub">{t.markets.sub}</p>
       </div>
+      <MarketMap lang={lang as Lang} latestHeadlines={latestHeadlines} />
 
       {openMarkets.length > 0 && (
         <>
