@@ -1186,10 +1186,6 @@ Copy
   margin-bottom: 14px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--ink-border);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* ══ MARKET PULSE (SIDEBAR) ══ */
