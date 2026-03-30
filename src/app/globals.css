@@ -1144,3 +1144,36 @@ Copy
     gap: 12px;
   }
 }
+
+/* ══ MARKET CARDS MOBILE SLIDER ══ */
+@media (max-width: 768px) {
+  .mkt-directory {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  .mkt-directory::-webkit-scrollbar { display: none; }
+  .mkt-card {
+    min-width: 280px;
+    max-width: 300px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+  .mkt-directory-dim {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .mkt-directory-dim::-webkit-scrollbar { display: none; }
+  .mkt-card-soon {
+    min-width: 200px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+}
