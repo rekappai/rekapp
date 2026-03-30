@@ -57,6 +57,18 @@ async function getLatest(code: string, lang: string) {
   return data?.[0]?.headline ?? null
 }
 
+
+async function getMarketSummary(code: string, lang: string) {
+  const { data } = await supabase
+    .from('market_summaries')
+    .select('summary, index_price, index_change_pct, generated_at')
+    .eq('country_code', code)
+    .eq('lang_code', lang)
+    .order('generated_at', { ascending: false })
+    .limit(1)
+  return data?.[0] ?? null
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   const meta = {
@@ -75,14 +87,15 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
 
   const stats: Record<string, any> = {}
   await Promise.all(active.map(async c => {
-    const [count, latest, index] = await Promise.all([
+    const [count, latest, index, summary] = await Promise.all([
       getCount(c.code, lang),
       getLatest(c.code, lang),
       getIndexPerformance(c.code),
+      getMarketSummary(c.code, lang),
     ])
     const hours = MARKET_HOURS[c.code]
     const open = hours ? isMarketOpen(hours.timezone, hours.open, hours.close) : false
-    stats[c.code] = { count, latest, open, index }
+    stats[c.code] = { count, latest, open, index, summary }
   }))
 
   const latestHeadlines: Record<string, string> = {}
@@ -120,6 +133,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
             <div className="mkt-card-stat-lbl">{t.markets.stat.stories} {t.markets.stat.today.toLowerCase()}</div>
           </div>
         </div>
+        {s.summary?.summary && <div className="mkt-card-summary">{s.summary.summary}</div>}
         {s.latest && <div className="mkt-card-foot">{t.markets.latest.split(' ')[0] + ':'} {s.latest}</div>}
       </Link>
     )

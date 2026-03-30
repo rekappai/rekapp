@@ -2,6 +2,22 @@ import Link from 'next/link'
 import { type Lang, useTranslations } from '@/lib/i18n'
 import { supabase } from '@/lib/supabase'
 
+async function getMarketPulse(lang: string) {
+  const { data } = await supabase
+    .from('market_summaries')
+    .select('country_code, summary, index_price, index_change_pct, generated_at')
+    .eq('lang_code', lang)
+    .order('generated_at', { ascending: false })
+    .limit(10)
+  if (!data?.length) return []
+  const seen = new Set<string>()
+  return data.filter(d => {
+    if (seen.has(d.country_code)) return false
+    seen.add(d.country_code)
+    return true
+  }).slice(0, 3)
+}
+
 async function getMovers(lang: string) {
   const { data } = await supabase
     .from('articles')
@@ -43,6 +59,7 @@ function MoverRow({ item, lang }: { item: any; lang: string }) {
 export default async function Sidebar({ lang }: { lang: Lang }) {
   const t = useTranslations(lang)
   const { risers, fallers } = await getMovers(lang)
+  const pulse = await getMarketPulse(lang)
 
   return (
     <div className="feed-sidebar">
@@ -56,6 +73,22 @@ export default async function Sidebar({ lang }: { lang: Lang }) {
         <div className="sb-widget">
           <div className="sb-head">{t.sidebar.fallers}</div>
           {fallers.map((item: any) => <MoverRow key={item.meta_slug} item={item} lang={lang} />)}
+        </div>
+      )}
+      {pulse.length > 0 && (
+        <div className="sb-widget">
+          <div className="sb-head">{lang === 'it' ? 'Polso dei mercati' : 'Market pulse'}</div>
+          {pulse.map((p: any) => (
+            <div key={p.country_code} className="pulse-item">
+              <div className="pulse-head">
+                <span className="pulse-idx">{p.country_code.toUpperCase()}</span>
+                <span className={'pulse-chg ' + (p.index_change_pct >= 0 ? 'up' : 'dn')}>
+                  {p.index_change_pct >= 0 ? '+' : ''}{Number(p.index_change_pct).toFixed(2)}%
+                </span>
+              </div>
+              <p className="pulse-text">{p.summary}</p>
+            </div>
+          ))}
         </div>
       )}
       <div className="sb-widget">
