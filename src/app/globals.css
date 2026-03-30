@@ -425,7 +425,7 @@ header {
 /* ═══════════════════════════════════
    BACK ROW
 ═══════════════════════════════════ */
-.back-row { display:flex; align-items:center; gap:14px; padding:12px 0 0; }
+.back-row { display:flex; align-items:center; gap:14px; padding:16px 0; border-bottom:1px solid var(--ink-border); margin-bottom:16px; }
 .back-btn { background:none; border:none; font-family:'DM Mono',monospace; font-size:0.54rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); cursor:pointer; transition:color 0.15s; padding:0; text-decoration:none; display:inline-block; }
 .back-btn:hover { color:var(--gold); }
 .back-line { flex:1; height:1px; background:var(--ink-border); }
