@@ -134,10 +134,11 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
             const s = 1 / ev.transform.k
             return `translate(${cx},${cy}) scale(${s})`
           })
-          g.selectAll('path').each(function (this: SVGPathElement, d: any) {
+          g.selectAll('path').each(function (d: any) {
+            const self = this as any;
             const code = ISO_TO_CODE[+d?.id]
             const base = code ? 0.8 : 0.4
-            d3.select(this).attr('stroke-width', base / ev.transform.k)
+            d3.select(self).attr('stroke-width', base / ev.transform.k)
           })
         })
 
