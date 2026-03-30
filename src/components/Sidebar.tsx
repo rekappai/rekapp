@@ -19,40 +19,62 @@ async function getMarketPulse(lang: string) {
 }
 
 async function getMovers(lang: string) {
+  // Fetch live market data — top risers and fallers across all markets
   const { data } = await supabase
-    .from('articles')
-    .select('meta_slug, headline, direction, change_pct, symbol, company_name')
-    .eq('lang_code', lang)
-    .eq('published', true)
+    .from('stock_live')
+    .select('stock_id, price, change_pct, alert_direction, stocks(symbol, name, country_code)')
     .not('change_pct', 'is', null)
-    .order('published_at', { ascending: false })
-    .limit(50)
+    .order('fetched_at', { ascending: false })
+    .limit(800)
 
   if (!data?.length) return { risers: [], fallers: [] }
 
-  const risers = data
-    .filter((a: any) => a.direction === 'up')
-    .sort((a: any, b: any) => b.change_pct - a.change_pct)
-    .slice(0, 3)
+  // Deduplicate by stock_id (keep most recent)
+  const seen = new Set<string>()
+  const unique = data.filter((d: any) => {
+    if (seen.has(d.stock_id)) return false
+    seen.add(d.stock_id)
+    return true
+  })
 
-  const fallers = data
-    .filter((a: any) => a.direction === 'down')
+  const risers = unique
+    .filter((d: any) => d.change_pct > 0 && d.stocks?.symbol)
+    .sort((a: any, b: any) => b.change_pct - a.change_pct)
+    .slice(0, 5)
+    .map((d: any) => ({
+      symbol: d.stocks.symbol,
+      company_name: d.stocks.name,
+      change_pct: d.change_pct,
+      direction: 'up' as const,
+      country_code: d.stocks.country_code,
+    }))
+
+  const fallers = unique
+    .filter((d: any) => d.change_pct < 0 && d.stocks?.symbol)
     .sort((a: any, b: any) => a.change_pct - b.change_pct)
-    .slice(0, 3)
+    .slice(0, 5)
+    .map((d: any) => ({
+      symbol: d.stocks.symbol,
+      company_name: d.stocks.name,
+      change_pct: d.change_pct,
+      direction: 'down' as const,
+      country_code: d.stocks.country_code,
+    }))
 
   return { risers, fallers }
 }
 
 function MoverRow({ item, lang }: { item: any; lang: string }) {
   const up = item.direction === 'up'
+  const cur = item.country_code === 'us' ? '' : ''
   return (
-    <Link href={'/' + lang + '/article/' + item.meta_slug} className="mover-row">
+    <div className="mover-row">
       <span className="mover-sym">{item.symbol}</span>
       <span className="mover-name">{item.company_name}</span>
       <span className={'mover-chg ' + (up ? 'up' : 'dn')}>
         {up ? '+' : ''}{Number(item.change_pct).toFixed(1)}%
       </span>
-    </Link>
+    </div>
   )
 }
 
