@@ -5,6 +5,12 @@ import { useState } from 'react'
 import { type Lang, useTranslations } from '@/lib/i18n'
 import { useAltSlug } from '@/lib/AltSlugContext'
 
+const ALL_LANGS: { code: Lang; flag: string; label: string }[] = [
+  { code: 'en', flag: '🇬🇧', label: 'EN' },
+  { code: 'it', flag: '🇮🇹', label: 'IT' },
+  { code: 'fr', flag: '🇫🇷', label: 'FR' },
+]
+
 export default function Header({ lang }: { lang: Lang }) {
   const t = useTranslations(lang)
   const pathname = usePathname()
@@ -12,18 +18,13 @@ export default function Header({ lang }: { lang: Lang }) {
   const [langOpen, setLangOpen] = useState(false)
   const { altHref } = useAltSlug()
 
-  const allLangs: { code: Lang; flag: string; label: string }[] = [
-    { code: 'en', flag: '🇬🇧', label: 'EN' },
-    { code: 'it', flag: '🇮🇹', label: 'IT' },
-    { code: 'fr', flag: '🇫🇷', label: 'FR' },
-  ]
-  const otherLangs = allLangs.filter(l => l.code !== lang)
-  const other = otherLangs[0].code
-  const curLang = allLangs.find(l => l.code === lang)!
-  const curFlag = curLang.flag
+  const curLang = ALL_LANGS.find(l => l.code === lang)!
+  const otherLangs = ALL_LANGS.filter(l => l.code !== lang)
 
-  // Use altHref if on article page, otherwise swap lang prefix
-  const switchPath = altHref ?? pathname.replace('/' + lang, '/' + other)
+  const langPath = (targetLang: string) =>
+    altHref
+      ? altHref.replace('/' + lang, '/' + targetLang)
+      : pathname.replace('/' + lang, '/' + targetLang)
 
   const nav = [
     { href: '/' + lang,              label: t.nav.feed },
@@ -59,15 +60,22 @@ export default function Header({ lang }: { lang: Lang }) {
           <div className="header-right">
             <div className="lang-wrap">
               <button className={'lang-btn' + (langOpen ? ' open' : '')} onClick={() => setLangOpen(o => !o)}>
-                <span>{curFlag}</span>
-                <span>{lang.toUpperCase()}</span>
+                <span>{curLang.flag}</span>
+                <span>{curLang.label}</span>
                 <span className="lang-caret">&#9660;</span>
               </button>
               {langOpen && (
                 <div className="lang-drop open">
-                  <Link href={switchPath} className="lang-opt" onClick={() => setLangOpen(false)}>
-                    {otherFlag} {otherLabel}
-                  </Link>
+                  {otherLangs.map(ol => (
+                    <Link
+                      key={ol.code}
+                      href={langPath(ol.code)}
+                      className="lang-opt"
+                      onClick={() => setLangOpen(false)}
+                    >
+                      {ol.flag} {ol.label}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
@@ -87,11 +95,18 @@ export default function Header({ lang }: { lang: Lang }) {
             ))}
           </div>
           <div className="mob-section">
-            <div className="mob-section-head">Language / Lingua</div>
+            <div className="mob-section-head">Language / Lingua / Langue</div>
             <div className="mob-lang-pills">
-              <Link href={switchPath} className="mob-pill" onClick={() => setMob(false)}>
-                {otherFlag} {otherLabel}
-              </Link>
+              {otherLangs.map(ol => (
+                <Link
+                  key={ol.code}
+                  href={langPath(ol.code)}
+                  className="mob-pill"
+                  onClick={() => setMob(false)}
+                >
+                  {ol.flag} {ol.label}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
