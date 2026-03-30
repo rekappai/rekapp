@@ -162,7 +162,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
                 </div>
                 <div className="archive-day-meta">
                   <div className="archive-day-count">{dayArticles.length}</div>
-                  <div className="archive-day-count-lbl">{t.archive.stories}</div>
+                  <div className="archive-day-count-lbl">{dayArticles.length === 1 ? (t.archive as any).story || t.archive.stories : t.archive.stories}</div>
                 </div>
               </div>
             )

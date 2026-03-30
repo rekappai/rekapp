@@ -74,6 +74,7 @@ export const ui = {
       },
       filters: 'Filters',
       stories: 'Stories',
+      story: 'Story',
       noResults: 'No stories match the selected filters.',
     },
     article: {
@@ -174,6 +175,7 @@ export const ui = {
       },
       filters: 'Filtri',
       stories: 'Articoli',
+      story: 'Articolo',
       noResults: 'Nessun articolo corrisponde ai filtri selezionati.',
     },
     article: {
@@ -274,6 +276,7 @@ export const ui = {
       },
       filters: 'Filtres',
       stories: 'Articles',
+      story: 'Article',
       noResults: 'Aucun article ne correspond aux filtres sélectionnés.',
     },
     article: {
@@ -377,6 +380,7 @@ export const ui = {
       },
       filters: 'Filtros',
       stories: 'Artículos',
+      story: 'Artículo',
       noResults: 'Ningún artículo coincide con los filtros seleccionados.',
     },
     article: {

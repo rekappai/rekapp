@@ -72,7 +72,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                     {date === today ? (({ en: 'Today — ', it: 'Oggi — ', fr: "Aujourd'hui — ", es: 'Hoy — ' }[lang] || 'Today — ')) + date : date}
                   </span>
                   <div className="feed-date-line" />
-                  <span className="feed-date-count">{dayArticles.length} {t.archive.stories.toLowerCase()}</span>
+                  <span className="feed-date-count">{dayArticles.length} {(dayArticles.length === 1 ? (t.archive as any).story || t.archive.stories : t.archive.stories).toLowerCase()}</span>
                 </div>
                 {dayArticles.map((article, i) => (
                   <FeedItem key={article.id} article={article} lang={lang as Lang} hero={gi === 0 && i === 0} />
