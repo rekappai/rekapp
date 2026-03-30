@@ -88,13 +88,13 @@ export default async function Sidebar({ lang }: { lang: Lang }) {
       {risers.length > 0 && (
         <div className="sb-widget">
           <div className="sb-head">{t.sidebar.risers}</div>
-          {risers.map((item: any) => <MoverRow key={item.meta_slug} item={item} lang={lang} />)}
+          {risers.map((item: any) => <MoverRow key={item.symbol} item={item} lang={lang} />)}
         </div>
       )}
       {fallers.length > 0 && (
         <div className="sb-widget">
           <div className="sb-head">{t.sidebar.fallers}</div>
-          {fallers.map((item: any) => <MoverRow key={item.meta_slug} item={item} lang={lang} />)}
+          {fallers.map((item: any) => <MoverRow key={item.symbol} item={item} lang={lang} />)}
         </div>
       )}
       {pulse.length > 0 && (
