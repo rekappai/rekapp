@@ -10,7 +10,7 @@ async function getMarketPulse(lang: string) {
     .order('generated_at', { ascending: false })
     .limit(10)
   if (!data?.length) return []
-  const seen = new Set<string>()
+  const seen = new Set()
   return data.filter(d => {
     if (seen.has(d.country_code)) return false
     seen.add(d.country_code)
@@ -30,7 +30,7 @@ async function getMovers(lang: string) {
   if (!data?.length) return { risers: [], fallers: [] }
 
   // Deduplicate by stock_id (keep most recent)
-  const seen = new Set<string>()
+  const seen = new Set()
   const unique = data.filter((d: any) => {
     if (seen.has(d.stock_id)) return false
     seen.add(d.stock_id)
