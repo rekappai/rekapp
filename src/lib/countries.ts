@@ -15,7 +15,6 @@ export const COUNTRIES: CountryConfig[] = [
   { code: 'de', name: 'Germany',       flag: '🇩🇪', index: 'DAX 40',     currency: 'EUR', active: false },
   { code: 'es', name: 'Spain',         flag: '🇪🇸', index: 'IBEX 35',    currency: 'EUR', active: false },
   { code: 'br', name: 'Brazil',        flag: '🇧🇷', index: 'Bovespa',    currency: 'BRL', active: false },
-  { code: 'fr', name: 'France',        flag: '🇫🇷', index: 'CAC 40',     currency: 'EUR', active: false },
   { code: 'jp', name: 'Japan',         flag: '🇯🇵', index: 'Nikkei 225', currency: 'JPY', active: false },
 ]
 
