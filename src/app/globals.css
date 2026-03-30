@@ -407,7 +407,7 @@ header {
 
 @media (max-width:899px) {
   .art-view-layout { display:block; }
-  .art-main { border-right:none; padding:10px 0 24px; border-bottom:1px solid var(--ink-border); }
+  .art-main { border-right:none; padding:0 0 24px; border-bottom:1px solid var(--ink-border); }
   .art-body p { max-width:100%; }
   .art-sb { padding:24px 0; }
   .art-h1 { font-size:1.5rem; }
@@ -653,7 +653,7 @@ footer {
 /* ══ BACK ROW — hide line on mobile ══ */
 @media (max-width: 899px) {
   .back-line { display: none; }
-  .back-row { padding: 10px 0 0; }
+  .back-row { padding: 16px 0 16px; }
 }
 
 /* ══ TOC FIXES ══ */
