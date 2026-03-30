@@ -15,12 +15,23 @@ async function getArticles(code: string, lang: string) {
   return data ?? []
 }
 
+async function getMarketSummary(code: string, lang: string) {
+  const { data } = await supabase
+    .from('market_summaries')
+    .select('summary, index_price, index_change_pct, generated_at')
+    .eq('country_code', code)
+    .eq('lang_code', lang)
+    .order('generated_at', { ascending: false })
+    .limit(1)
+  return data?.[0] ?? null
+}
+
 export default async function MarketDetailPage({ params }: { params: Promise<{ lang: string; country: string }> }) {
   const { lang, country } = await params
   const t = useTranslations(lang as Lang)
   const cfg = getCountry(country)
   if (!cfg || !cfg.active) notFound()
-  const articles = await getArticles(country, lang)
+  const [articles, summary] = await Promise.all([getArticles(country, lang), getMarketSummary(country, lang)])
   return (
     <div className="page">
       <div className="page-header">
@@ -28,6 +39,9 @@ export default async function MarketDetailPage({ params }: { params: Promise<{ l
         <h1 className="page-title">{cfg.index}</h1>
       </div>
       <div className="sec-head"><span className="sec-lbl">{t.markets.latest}</span><div className="sec-line" /></div>
+      {summary?.summary && (
+        <div className="mkt-detail-summary">{summary.summary}</div>
+      )}
       <div style={{ borderTop:'1px solid var(--ink-border)' }}>
         {articles.map((a, i) => <FeedItem key={a.id} article={a} lang={lang as Lang} hero={i === 0} />)}
         {articles.length === 0 && <div className="empty-state">{lang === 'fr' ? 'Aucun article disponible.' : lang === 'it' ? 'Nessun articolo disponibile.' : 'No articles available yet.'}</div>}
