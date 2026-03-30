@@ -12,7 +12,7 @@ async function getArticles(lang: string) {
     .from('articles')
     .select('*, stocks(symbol, name, sector, cap_tier, country_code), alerts!alert_id(direction, change_pct, price_at_alert, previous_close, triggered_at)')
     .eq('lang_code', lang).eq('published', true)
-    .order('published_at', { ascending: false }).limit(20)
+    .order('published_at', { ascending: false }).limit(10)
   return data ?? []
 }
 
@@ -21,7 +21,7 @@ async function getTicker() {
     .from('articles')
     .select('stocks(symbol), alerts!alert_id(direction, change_pct)')
     .eq('published', true)
-    .order('published_at', { ascending: false }).limit(20)
+    .order('published_at', { ascending: false }).limit(10)
   return data ?? []
 }
 

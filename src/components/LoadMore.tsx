@@ -11,7 +11,7 @@ interface LoadMoreProps {
   pageSize?: number
 }
 
-export default function LoadMore({ lang, initialCount, tag, pageSize = 20 }: LoadMoreProps) {
+export default function LoadMore({ lang, initialCount, tag, pageSize = 10 }: LoadMoreProps) {
   const [articles, setArticles] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(initialCount >= pageSize)
