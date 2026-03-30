@@ -1227,3 +1227,19 @@ Copy
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ══ MARKET MAP MOBILE FIX ══ */
+@media (max-width: 768px) {
+  .market-map-container svg {
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .market-map-container {
+    min-height: 200px;
+    overflow: hidden;
+  }
+  .market-map-hint {
+    bottom: 6px;
+    font-size: 0.5rem;
+  }
+}
