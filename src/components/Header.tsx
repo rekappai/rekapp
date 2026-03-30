@@ -12,10 +12,15 @@ export default function Header({ lang }: { lang: Lang }) {
   const [langOpen, setLangOpen] = useState(false)
   const { altHref } = useAltSlug()
 
-  const other = lang === 'en' ? 'it' : 'en'
-  const otherFlag = lang === 'en' ? '🇮🇹' : '🇬🇧'
-  const otherLabel = lang === 'en' ? 'IT' : 'EN'
-  const curFlag = lang === 'en' ? '🇬🇧' : '🇮🇹'
+  const allLangs: { code: Lang; flag: string; label: string }[] = [
+    { code: 'en', flag: '🇬🇧', label: 'EN' },
+    { code: 'it', flag: '🇮🇹', label: 'IT' },
+    { code: 'fr', flag: '🇫🇷', label: 'FR' },
+  ]
+  const otherLangs = allLangs.filter(l => l.code !== lang)
+  const other = otherLangs[0].code
+  const curLang = allLangs.find(l => l.code === lang)!
+  const curFlag = curLang.flag
 
   // Use altHref if on article page, otherwise swap lang prefix
   const switchPath = altHref ?? pathname.replace('/' + lang, '/' + other)

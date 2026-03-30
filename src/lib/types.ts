@@ -38,7 +38,7 @@ export type Alert = {
   triggered_at: string
 }
 
-export type Language = 'en' | 'it'
+export type Language = 'en' | 'it' | 'fr'
 
 export type Country = {
   code: string

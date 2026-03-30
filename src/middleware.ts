@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const SUPPORTED = ['en', 'it']
+const SUPPORTED = ['en', 'it', 'fr']
 const DEFAULT   = 'en'
 
 function detectLang(req: NextRequest): string {

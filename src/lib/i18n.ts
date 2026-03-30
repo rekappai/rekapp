@@ -1,4 +1,4 @@
-export const languages = ['en', 'it'] as const
+export const languages = ['en', 'it', 'fr'] as const
 export type Lang = typeof languages[number]
 
 export const ui = {
@@ -188,6 +188,100 @@ export const ui = {
     },
     footer: {
       copy: 'Intelligenza finanziaria automatizzata',
+    },
+  },
+  fr: {
+    nav: {
+      feed: 'Fil d\'actualité',
+      markets: 'Marchés',
+      topics: 'Thèmes',
+      archive: 'Archives',
+      search: 'Recherche',
+    },
+    feed: {
+      eyebrow: 'Marchés actifs mondialement',
+      title: 'Fil d\'actualité',
+      titleEm: 'en direct',
+      readMore: 'Lire l\'article →',
+      filter: {
+        all: 'Tous les marchés',
+        gainers: 'Hausses',
+        losers: 'Baisses',
+        big: 'Fortes variations',
+      },
+    },
+    sidebar: {
+      indices: 'Indices',
+      movers: 'Plus fortes variations',
+      search: 'Recherche',
+      topics: 'Thèmes',
+      allMarkets: 'Tous les marchés →',
+    },
+    markets: {
+      title: 'Marchés',
+      sub: 'Intelligence financière sur les principaux indices mondiaux. Cliquez sur un marché pour voir ses dernières actualités.',
+      active: 'Actifs',
+      soon: 'Prochainement',
+      status: { open: 'Ouvert', closed: 'Fermé', soon: 'Bientôt' },
+      stat: { today: 'Aujourd\'hui', moves: 'Mouvements', stories: 'Articles' },
+      latest: 'Dernières actualités',
+    },
+    topics: {
+      title: 'Thèmes',
+      earnings: 'Résultats',
+      analysts: 'Analystes',
+      ai: 'IA',
+      banks: 'Banques',
+      energy: 'Énergie',
+      evs: 'Véhicules électriques',
+      semiconductors: 'Semi-conducteurs',
+      macro: 'Macro',
+      ma: 'Fusions-acquisitions',
+      rates: 'Taux d\'intérêt',
+      ipo: 'Introduction en bourse',
+      fda: 'FDA',
+      trade: 'Commerce / Tarifs',
+    },
+    archive: {
+      title: 'Archives',
+      sub: 'Chaque article, chaque marché, chaque jour.',
+      filter: {
+        market: 'Marché',
+        direction: 'Direction',
+        topic: 'Thème',
+        all: 'Tous',
+        gainers: 'Hausses',
+        losers: 'Baisses',
+        done: 'Terminé',
+      },
+      filters: 'Filtres',
+      stories: 'Articles',
+      noResults: 'Aucun article ne correspond aux filtres sélectionnés.',
+    },
+    article: {
+      byline: 'Généré par Rekapp',
+      factChecked: '✓ Vérifié',
+      whatItMeans: 'Qu\'est-ce que cela signifie',
+      tags: 'Tags',
+      related: 'Articles connexes',
+      back: '← Retour',
+      moveThreshold: 'Seuil de mouvement',
+      previousClose: 'Clôture précédente',
+      dayHigh: 'Plus haut du jour',
+      dayLow: 'Plus bas du jour',
+      capTier: 'Capitalisation',
+      large: 'Grande',
+      mid: 'Moyenne',
+      small: 'Petite',
+    },
+    search: {
+      title: 'Recherche',
+      placeholder: 'Ticker ou mot-clé...',
+      hint: 'Essayez : MC.PA · BNP.PA · résultats · luxe',
+      go: 'Go',
+    },
+    footer: {
+      copy: 'Intelligence financière automatisée',
     },
   },
 } as const
