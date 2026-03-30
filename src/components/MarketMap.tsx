@@ -147,8 +147,8 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
       // Start zoomed into Europe (where most markets are)
       const isMobile = window.innerWidth < 768
       const europeTransform = isMobile
-        ? d3.zoomIdentity.translate(-850, -380).scale(3.5)
-        : d3.zoomIdentity.translate(-700, -300).scale(2.5)
+        ? d3.zoomIdentity.translate(-950, -380).scale(3.5)
+        : d3.zoomIdentity.translate(-800, -300).scale(2.5)
       svg.call(zoom.transform as any, europeTransform)
 
       // Zoom controls
