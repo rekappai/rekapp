@@ -38,10 +38,10 @@ export default async function MarketDetailPage({ params }: { params: Promise<{ l
         <div style={{ fontFamily:'DM Mono,monospace', fontSize:'0.54rem', letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--gold)', marginBottom:8 }}>{cfg.flag} {cfg.name}</div>
         <h1 className="page-title">{cfg.index}</h1>
       </div>
-      <div className="sec-head"><span className="sec-lbl">{t.markets.latest}</span><div className="sec-line" /></div>
       {summary?.summary && (
         <div className="mkt-detail-summary">{summary.summary}</div>
       )}
+      <div className="sec-head"><span className="sec-lbl">{t.markets.latest}</span><div className="sec-line" /></div>
       <div style={{ borderTop:'1px solid var(--ink-border)' }}>
         {articles.map((a, i) => <FeedItem key={a.id} article={a} lang={lang as Lang} hero={i === 0} />)}
         {articles.length === 0 && <div className="empty-state">{lang === 'fr' ? 'Aucun article disponible.' : lang === 'it' ? 'Nessun articolo disponibile.' : 'No articles available yet.'}</div>}
