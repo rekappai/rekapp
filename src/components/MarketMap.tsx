@@ -126,9 +126,10 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
         .scaleExtent([1, 8])
         .on('zoom', (ev) => {
           g.attr('transform', ev.transform.toString())
-          g.selectAll('.map-label').attr('transform', function (this: SVGTextElement) {
-            const cx = this.getAttribute('data-cx')
-            const cy = this.getAttribute('data-cy')
+          g.selectAll('.map-label').attr('transform', function () {
+            const el = this as any
+            const cx = el.getAttribute('data-cx')
+            const cy = el.getAttribute('data-cy')
             if (!cx || !cy) return ''
             const s = 1 / ev.transform.k
             return `translate(${cx},${cy}) scale(${s})`
