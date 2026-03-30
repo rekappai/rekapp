@@ -36,9 +36,9 @@ const MARKET_DATA: Record<string, MarketInfo> = {
   fr: { code: 'fr', name: 'France', index: 'CAC 40', flag: '🇫🇷', hours: '9:00 - 17:30 CET', timezone: 'Europe/Paris', open: 9, close: 17.5, active: true, currency: '€' },
   uk: { code: 'uk', name: 'United Kingdom', index: 'FTSE 100', flag: '🇬🇧', hours: '8:00 - 16:30 GMT', timezone: 'Europe/London', open: 8, close: 16.5, active: false, currency: '£' },
   de: { code: 'de', name: 'Germany', index: 'DAX 40', flag: '🇩🇪', hours: '9:00 - 17:30 CET', timezone: 'Europe/Berlin', open: 9, close: 17.5, active: false, currency: '€' },
+  es: { code: 'es', name: 'Spain', index: 'IBEX 35', flag: '🇪🇸', hours: '9:00 - 17:30 CET', timezone: 'Europe/Madrid', open: 9, close: 17.5, active: false, currency: '€' },
   br: { code: 'br', name: 'Brazil', index: 'Bovespa', flag: '🇧🇷', hours: '10:00 - 17:00 BRT', timezone: 'America/Sao_Paulo', open: 10, close: 17, active: false, currency: 'R$' },
   jp: { code: 'jp', name: 'Japan', index: 'Nikkei 225', flag: '🇯🇵', hours: '9:00 - 15:00 JST', timezone: 'Asia/Tokyo', open: 9, close: 15, active: false, currency: '¥' },
-  es: { code: 'es', name: 'Spain', index: 'IBEX 35', flag: '🇪🇸', hours: '9:00 - 17:30 CET', timezone: 'Europe/Madrid', open: 9, close: 17.5, active: true, currency: '€' },
 }
 
 function getMarketStatus(m: MarketInfo): 'open' | 'closed' | 'soon' {
@@ -251,21 +251,25 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
   const selectedIndex = selected ? indexPerf.find(d => d.country === selected.market.code) : null
   const selectedLatest = selected ? latestHeadlines?.[selected.market.code] : null
 
-  const hintText = ({ en: 'Click a highlighted country to explore', it: 'Tocca un paese evidenziato per esplorare', fr: 'Cliquez sur un pays en surbrillance', es: 'Toca un país destacado para explorar' } as Record<string,string>)[lang] || 'Click a highlighted country to explore'
+  const hintText = lang === 'it' ? 'Tocca un paese evidenziato per esplorare'
+    : lang === 'fr' ? 'Cliquez sur un pays en surbrillance'
+    : 'Click a highlighted country to explore'
 
-  const soonText = ({ en: 'Coverage is coming soon.', it: 'La copertura è in arrivo.', fr: 'La couverture arrive bientôt.', es: 'La cobertura estará disponible próximamente.' } as Record<string,string>)[lang] || 'Coverage is coming soon.'
+  const soonText = lang === 'it' ? 'La copertura è in arrivo.'
+    : lang === 'fr' ? 'La couverture arrive bientôt.'
+    : 'Coverage is coming soon.'
 
-  const latestLabel = ({ en: 'Latest', it: 'Ultima notizia', fr: 'Dernier article', es: 'Última noticia' } as Record<string,string>)[lang] || 'Latest'
-  const hoursLabel = ({ en: 'Hours', it: 'Orari', fr: 'Horaires', es: 'Horario' } as Record<string,string>)[lang] || 'Hours'
-  const closeLabel = ({ en: 'Last close', it: 'Ultima chiusura', fr: 'Dernière clôture', es: 'Último cierre' } as Record<string,string>)[lang] || 'Last close'
-  const changeLabel = ({ en: 'Change', it: 'Variazione', fr: 'Variation', es: 'Variación' } as Record<string,string>)[lang] || 'Change'
+  const latestLabel = lang === 'it' ? 'Ultima notizia' : lang === 'fr' ? 'Dernière actu' : 'Latest'
+  const hoursLabel = lang === 'it' ? 'Orari' : lang === 'fr' ? 'Horaires' : 'Hours'
+  const closeLabel = lang === 'it' ? 'Ultima chiusura' : lang === 'fr' ? 'Dernière clôture' : 'Last close'
+  const changeLabel = lang === 'it' ? 'Variazione' : lang === 'fr' ? 'Variation' : 'Change'
 
   return (
     <div className="market-map-wrap">
       <div className="market-map-container" ref={containerRef}>
         {!loaded && (
           <div className="market-map-loading">
-            {({ en: 'Loading map...', it: 'Caricamento mappa...', fr: 'Chargement...', es: 'Cargando mapa...' }[lang] || 'Loading map...')}
+            {lang === 'it' ? 'Caricamento mappa...' : lang === 'fr' ? 'Chargement...' : 'Loading map...'}
           </div>
         )}
         <div className="market-map-zoom" style={{ display: loaded ? 'flex' : 'none' }}>
@@ -285,10 +289,10 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
             <span className="mmp-idx">{selected.market.index}</span>
             <span className={`mmp-status ${selected.status}`}>
               {selected.status === 'soon'
-                ? (({ en: 'Coming soon', it: 'Prossimamente', fr: 'Bientôt', es: 'Próximamente' }[lang] || 'Coming soon'))
+                ? (lang === 'it' ? 'Prossimamente' : lang === 'fr' ? 'Bientôt' : 'Coming soon')
                 : selected.status === 'open'
-                  ? (({ en: 'Open', it: 'Aperto', fr: 'Ouvert', es: 'Abierto' }[lang] || 'Open'))
-                  : (({ en: 'Closed', it: 'Chiuso', fr: 'Fermé', es: 'Cerrado' }[lang] || 'Closed'))
+                  ? (lang === 'it' ? 'Aperto' : lang === 'fr' ? 'Ouvert' : 'Open')
+                  : (lang === 'it' ? 'Chiuso' : lang === 'fr' ? 'Fermé' : 'Closed')
               }
             </span>
           </div>
@@ -334,9 +338,9 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
       )}
 
       <div className="market-map-legend">
-        <span className="mml-item"><span className="mml-dot mml-open"></span>{({ en: 'Open', it: 'Aperto', fr: 'Ouvert', es: 'Abierto' }[lang] || 'Open')}</span>
-        <span className="mml-item"><span className="mml-dot mml-closed"></span>{({ en: 'Closed', it: 'Chiuso', fr: 'Fermé', es: 'Cerrado' }[lang] || 'Closed')}</span>
-        <span className="mml-item"><span className="mml-dot mml-soon"></span>{({ en: 'Coming soon', it: 'Prossimamente', fr: 'Bientôt', es: 'Próximamente' }[lang] || 'Coming soon')}</span>
+        <span className="mml-item"><span className="mml-dot mml-open"></span>{lang === 'it' ? 'Aperto' : lang === 'fr' ? 'Ouvert' : 'Open'}</span>
+        <span className="mml-item"><span className="mml-dot mml-closed"></span>{lang === 'it' ? 'Chiuso' : lang === 'fr' ? 'Fermé' : 'Closed'}</span>
+        <span className="mml-item"><span className="mml-dot mml-soon"></span>{lang === 'it' ? 'Prossimamente' : lang === 'fr' ? 'Bientôt' : 'Coming soon'}</span>
       </div>
     </div>
   )

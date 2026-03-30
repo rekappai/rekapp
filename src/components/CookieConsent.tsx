@@ -23,6 +23,12 @@ const text = {
     essential: 'Essentiels uniquement',
     policy: 'Politique de cookies',
   },
+  es: {
+    message: 'Utilizamos cookies para mejorar tu experiencia y analizar el uso del sitio.',
+    accept: 'Aceptar todas',
+    essential: 'Solo esenciales',
+    policy: 'Política de cookies',
+  },
 }
 
 export default function CookieConsent({ lang }: { lang: Lang }) {

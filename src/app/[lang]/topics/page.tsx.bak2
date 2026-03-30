@@ -45,7 +45,7 @@ export default async function TopicsPage({ params, searchParams }: { params: Pro
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title">{({ en: 'Trending', it: 'In tendenza', fr: 'Tendances', es: 'Tendencias' }[lang] || 'Trending')}</h1>
+        <h1 className="page-title">{lang === 'it' ? 'In tendenza' : 'Trending'}</h1>
         <TopicsClient lang={lang as Lang} activeTag={tag} topics={topics} />
       </div>
       <div style={{ borderTop: '1px solid var(--ink-border)' }}>

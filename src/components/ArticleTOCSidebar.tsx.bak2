@@ -12,8 +12,8 @@ export default function ArticleTOCSidebar({
   const [active, setActive] = useState<'recap' | 'explainer'>('recap')
 
   const labels = {
-    recap:     ({ en: 'News Recap', it: 'Notizia', fr: "L'essentiel", es: 'Resumen' }[lang] || 'News Recap'),
-    explainer: ({ en: 'What Does It Mean', it: 'Cosa significa', fr: 'Décryptage', es: 'Qué significa' }[lang] || 'What Does It Mean'),
+    recap:     lang === 'it' ? 'Notizia'        : 'News Recap',
+    explainer: lang === 'it' ? 'Cosa significa' : 'What Does It Mean',
   }
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function ArticleTOCSidebar({
 
   return (
     <div className="art-toc-sb">
-      <div className="art-sb-lbl">{({ en: 'In this article', it: 'In questo articolo', fr: 'Dans cet article', es: 'En este artículo' }[lang] || 'In this article')}</div>
+      <div className="art-sb-lbl">{lang === 'it' ? 'In questo articolo' : 'In this article'}</div>
       {(['recap', 'explainer'] as const).map(id => (
         <button
           key={id}

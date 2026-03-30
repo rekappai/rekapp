@@ -167,7 +167,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
 
           {related.length > 0 && (
             <div className="art-sb-sec">
-              <div className="art-sb-lbl">{({ en: 'More stories', it: 'Altre storie', fr: 'Autres articles', es: 'Más artículos' }[lang] || 'More stories')}</div>
+              <div className="art-sb-lbl">{lang === 'it' ? 'Altre storie' : 'More stories'}</div>
               {related.map((r: any) => {
                 const rs = Array.isArray(r.stocks) ? r.stocks[0] : r.stocks
                 const rup = r.direction === 'up'

@@ -10,7 +10,6 @@ const ALL_LANGS: { code: Lang; flag: string; label: string }[] = [
   { code: 'en', flag: '🇬🇧', label: 'EN' },
   { code: 'it', flag: '🇮🇹', label: 'IT' },
   { code: 'fr', flag: '🇫🇷', label: 'FR' },
-    { code: 'es', flag: '🇪🇸', label: 'ES' },
 ]
 
 export default function Header({ lang }: { lang: Lang }) {

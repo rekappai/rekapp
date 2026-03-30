@@ -19,7 +19,6 @@ const MARKET_HOURS: Record<string, { timezone: string; open: number; close: numb
   us: { timezone: 'America/New_York', open: 9.5, close: 16 },
   it: { timezone: 'Europe/Rome', open: 9, close: 17.5 },
   fr: { timezone: 'Europe/Paris', open: 9, close: 17.5 },
-  es: { timezone: 'Europe/Madrid', open: 9, close: 17.5 },
 }
 
 const INDEX_SYMBOLS: Record<string, string> = {

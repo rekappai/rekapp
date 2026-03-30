@@ -46,7 +46,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
 
   const grouped = useMemo(() => {
     const months: Record<string, Record<string, AA[]>> = {}
-    const loc = ({ en: 'en-GB', it: 'it-IT', fr: 'fr-FR', es: 'es-ES' }[lang] || 'en-GB')
+    const loc = lang === 'it' ? 'it-IT' : 'en-GB'
     for (const a of filtered) {
       const d = new Date(a.published_at)
       const mo = d.toLocaleDateString(loc, { month: 'long', year: 'numeric' })
@@ -133,7 +133,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
           {Object.entries(days).map(([, dayArticles]) => {
             const first = dayArticles[0]
             const d = new Date(first.published_at)
-            const loc = ({ en: 'en-GB', it: 'it-IT', fr: 'fr-FR', es: 'es-ES' }[lang] || 'en-GB')
+            const loc = lang === 'it' ? 'it-IT' : 'en-GB'
             return (
               <div key={first.id} className="archive-day">
                 <div className="archive-day-date">

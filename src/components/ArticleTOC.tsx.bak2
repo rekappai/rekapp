@@ -45,8 +45,8 @@ export default function ArticleTOC({
   const explainerRef = useRef<HTMLDivElement>(null)
 
   const labels = {
-    recap:     ({ en: 'News Recap', it: 'Notizia', fr: "L'essentiel", es: 'Resumen' }[lang] || 'News Recap'),
-    explainer: ({ en: 'What Does It Mean', it: 'Cosa significa', fr: 'Décryptage', es: 'Qué significa' }[lang] || 'What Does It Mean'),
+    recap:     lang === 'it' ? 'Notizia'        : 'News Recap',
+    explainer: lang === 'it' ? 'Cosa significa' : 'What Does It Mean',
   }
 
   useEffect(() => {

@@ -15,7 +15,7 @@ export default function RelatedArticles({ articles, lang }: { articles: RelatedA
   return (
     <div className="related-articles">
       <div className="sec-head">
-        <span className="sec-lbl">{({ en: 'More stories', it: 'Altre storie', fr: 'Autres articles', es: 'Más artículos' }[lang] || 'More stories')}</span>
+        <span className="sec-lbl">{lang === 'it' ? 'Altre storie' : 'More stories'}</span>
         <div className="sec-line" />
       </div>
       <div className="related-grid">
