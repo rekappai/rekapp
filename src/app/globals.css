@@ -825,7 +825,7 @@ Copy
   letter-spacing: -0.02em;
 }
  
-.logo-letter {
+.logo .logo-letter {
   display: inline-block;
   opacity: 0;
   transform: translateY(4px);
@@ -833,16 +833,16 @@ Copy
   color: var(--text);
 }
  
-.logo-letter.visible {
+.logo .logo-letter.visible {
   opacity: 1;
   transform: translateY(0);
 }
  
-.logo-letter-gold {
+.logo .logo-letter-gold {
   color: var(--text);
 }
  
-.logo-letter-gold.visible.glow {
+.logo .logo-letter-gold.visible.glow {
   color: var(--gold);
 }
  
