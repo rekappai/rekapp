@@ -19,47 +19,32 @@ async function getMarketPulse(lang: string) {
 }
 
 async function getMovers(lang: string) {
-  // Fetch live market data — top risers and fallers across all markets
-  const { data } = await supabase
+  // Top risers
+  const { data: riserData } = await supabase
     .from('stock_live')
-    .select('stock_id, price, change_pct, alert_direction, stocks(symbol, name, country_code)')
-    .not('change_pct', 'is', null)
-    .order('fetched_at', { ascending: false })
-    .limit(800)
+    .select('stock_id, change_pct, stocks(symbol, name, country_code)')
+    .gt('change_pct', 0)
+    .order('change_pct', { ascending: false })
+    .limit(5)
 
-  if (!data?.length) return { risers: [], fallers: [] }
+  // Top fallers
+  const { data: fallerData } = await supabase
+    .from('stock_live')
+    .select('stock_id, change_pct, stocks(symbol, name, country_code)')
+    .lt('change_pct', 0)
+    .order('change_pct', { ascending: true })
+    .limit(5)
 
-  // Deduplicate by stock_id (keep most recent)
-  const seen = new Set()
-  const unique = data.filter((d: any) => {
-    if (seen.has(d.stock_id)) return false
-    seen.add(d.stock_id)
-    return true
+  const mapRow = (d: any, dir: 'up' | 'down') => ({
+    symbol: d.stocks?.symbol ?? '',
+    company_name: d.stocks?.name ?? '',
+    change_pct: d.change_pct,
+    direction: dir,
+    country_code: d.stocks?.country_code ?? '',
   })
 
-  const risers = unique
-    .filter((d: any) => d.change_pct > 0 && d.stocks?.symbol)
-    .sort((a: any, b: any) => b.change_pct - a.change_pct)
-    .slice(0, 5)
-    .map((d: any) => ({
-      symbol: d.stocks.symbol,
-      company_name: d.stocks.name,
-      change_pct: d.change_pct,
-      direction: 'up' as const,
-      country_code: d.stocks.country_code,
-    }))
-
-  const fallers = unique
-    .filter((d: any) => d.change_pct < 0 && d.stocks?.symbol)
-    .sort((a: any, b: any) => a.change_pct - b.change_pct)
-    .slice(0, 5)
-    .map((d: any) => ({
-      symbol: d.stocks.symbol,
-      company_name: d.stocks.name,
-      change_pct: d.change_pct,
-      direction: 'down' as const,
-      country_code: d.stocks.country_code,
-    }))
+  const risers = (riserData ?? []).filter((d: any) => d.stocks?.symbol).map((d: any) => mapRow(d, 'up'))
+  const fallers = (fallerData ?? []).filter((d: any) => d.stocks?.symbol).map((d: any) => mapRow(d, 'down'))
 
   return { risers, fallers }
 }
