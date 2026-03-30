@@ -379,7 +379,7 @@ header {
    ARTICLE
 ═══════════════════════════════════ */
 .art-view-layout { display:grid; grid-template-columns:1fr 280px; margin-bottom:64px; }
-.art-main { padding:32px 44px 32px 0; border-right:1px solid var(--ink-border); min-width:0; }
+.art-main { padding:16px 44px 32px 0; border-right:1px solid var(--ink-border); min-width:0; }
 .art-kicker { font-family:'DM Mono',monospace; font-size:0.54rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
 .art-h1 { font-family:'Playfair Display',serif; font-size:1.85rem; font-weight:400; line-height:1.22; letter-spacing:-0.02em; color:var(--text); margin-bottom:14px; }
 .art-byline { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:0.7rem; color:var(--text-dim); padding-bottom:20px; margin-bottom:20px; border-bottom:1px solid var(--ink-border); }
@@ -394,7 +394,7 @@ header {
 .expl-line { flex:1; height:1px; background:var(--ink-border); }
 .art-tags { margin-top:28px; padding-top:20px; border-top:1px solid var(--ink-border); }
 .art-tags-lbl { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
-.art-sb { padding:32px 0 32px 28px; }
+.art-sb { padding:16px 0 32px 28px; }
 .art-sb-sec { padding-bottom:22px; margin-bottom:22px; border-bottom:1px solid var(--ink-border); }
 .art-sb-sec:last-child { border-bottom:none; }
 .art-sb-lbl { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-dim); margin-bottom:12px; }
