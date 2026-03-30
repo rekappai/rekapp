@@ -812,3 +812,37 @@ footer {
 /* ══ SHARE BUTTONS — force new line in byline ══ */
 .art-byline { flex-wrap: wrap; }
 .art-byline .share-buttons { width: 100%; margin: 8px 0 0; }
+
+
+Copy
+
+/* ══ LOGO TYPEWRITER ANIMATION ══ */
+.logo-typewriter {
+  display: inline-block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+ 
+.logo-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease, color 0.4s ease;
+  color: var(--text);
+}
+ 
+.logo-letter.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+ 
+.logo-letter-gold {
+  color: var(--text);
+}
+ 
+.logo-letter-gold.visible.glow {
+  color: var(--gold);
+}
+ 

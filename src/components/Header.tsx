@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { type Lang, useTranslations } from '@/lib/i18n'
 import { useAltSlug } from '@/lib/AltSlugContext'
+import LogoTypewriter from './LogoTypewriter'
 
 const ALL_LANGS: { code: Lang; flag: string; label: string }[] = [
   { code: 'en', flag: '🇬🇧', label: 'EN' },
@@ -46,7 +47,7 @@ export default function Header({ lang }: { lang: Lang }) {
           </button>
 
           <Link href={'/' + lang} className="logo" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-            Rek<span>app</span>
+            <LogoTypewriter />
           </Link>
 
           <nav className="nav-primary">
