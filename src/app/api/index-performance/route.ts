@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 const INDICES = [
   { symbol: '%5EGSPC', country: 'us', name: 'S&P 500', currency: '$' },
   { symbol: 'FTSEMIB.MI', country: 'it', name: 'FTSE MIB', currency: '€' },
+  { symbol: '%5EFCHI', country: 'fr', name: 'CAC 40', currency: '€' },
 ]
 
 async function fetchIndex(symbol: string) {
