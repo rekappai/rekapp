@@ -144,12 +144,12 @@ export default function MarketMap({ lang, latestHeadlines }: { lang: Lang; lates
 
       svg.call(zoom as any)
 
-      // Mobile: start zoomed into Europe
+      // Start zoomed into Europe (where most markets are)
       const isMobile = window.innerWidth < 768
-      if (isMobile) {
-        const europeTransform = d3.zoomIdentity.translate(-200, -80).scale(2.5)
-        svg.call(zoom.transform as any, europeTransform)
-      }
+      const europeTransform = isMobile
+        ? d3.zoomIdentity.translate(-200, -80).scale(2.5)
+        : d3.zoomIdentity.translate(-150, -50).scale(1.8)
+      svg.call(zoom.transform as any, europeTransform)
 
       // Zoom controls
       const ziBtn = document.getElementById('map-zi')
