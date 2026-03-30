@@ -3,6 +3,7 @@ import { Playfair_Display, DM_Sans, DM_Mono } from 'next/font/google'
 import { languages } from '@/lib/i18n'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import CookieConsent from '@/components/CookieConsent'
 import type { Lang } from '@/lib/i18n'
 import Script from 'next/script'
 import { AltSlugProvider } from '@/lib/AltSlugContext'
@@ -34,6 +35,7 @@ export default async function LangLayout({ children, params }: { children: React
           <Header lang={lang as Lang} />
           <main style={{ minHeight: '60vh' }}>{children}</main>
           <Footer lang={lang as Lang} />
+        <CookieConsent lang={lang as Lang} />
         </AltSlugProvider>
       </body>
     </html>
