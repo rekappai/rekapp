@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { useTranslations, type Lang } from '@/lib/i18n'
-import { COUNTRIES } from '@/lib/countries'
+import { COUNTRIES, getCountryName } from '@/lib/countries'
 import Link from 'next/link'
 
 export const revalidate = 300
@@ -17,11 +17,13 @@ function isMarketOpen(timezone: string, openHour: number, closeHour: number): bo
 const MARKET_HOURS: Record<string, { timezone: string; open: number; close: number }> = {
   us: { timezone: 'America/New_York', open: 9.5, close: 16 },
   it: { timezone: 'Europe/Rome', open: 9, close: 17.5 },
+  fr: { timezone: 'Europe/Paris', open: 9, close: 17.5 },
 }
 
 const INDEX_SYMBOLS: Record<string, string> = {
   us: '%5EGSPC',
   it: 'FTSEMIB.MI',
+  fr: '%5EFCHI',
 }
 
 async function getIndexPerformance(country: string) {
@@ -59,6 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const meta = {
     en: { title: 'Markets — Rekapp', description: 'Financial intelligence across global indices. S&P 500, FTSE MIB and more.' },
     it: { title: 'Mercati — Rekapp', description: 'Intelligenza finanziaria sui principali indici globali. S&P 500, FTSE MIB e altri.' },
+    fr: { title: 'Marchés — Rekapp', description: 'Intelligence financière sur les principaux indices mondiaux. S&P 500, FTSE MIB, CAC 40 et plus.' },
   } as Record<string, { title: string; description: string }>
   return meta[lang] ?? meta.en
 }
@@ -93,7 +96,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
           <div>
             <div className="mkt-card-flag">{c.flag}</div>
             <div className="mkt-card-name">{c.index}</div>
-            <div className="mkt-card-country">{c.name}</div>
+            <div className="mkt-card-country">{getCountryName(c.code, lang as string)}</div>
           </div>
           <span className={'mkt-card-status ' + (s.open ? 'open' : 'closed')}>
             {s.open ? t.markets.status.open : t.markets.status.closed}
@@ -110,10 +113,10 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
         <div className="mkt-card-stats">
           <div className="mkt-card-stat">
             <div className="mkt-card-stat-val">{s.count}</div>
-            <div className="mkt-card-stat-lbl">{t.markets.stat.stories} {lang === 'it' ? 'oggi' : 'today'}</div>
+            <div className="mkt-card-stat-lbl">{t.markets.stat.stories} {t.markets.stat.today.toLowerCase()}</div>
           </div>
         </div>
-        {s.latest && <div className="mkt-card-foot">{lang === 'it' ? 'Ultimo:' : 'Latest:'} {s.latest}</div>}
+        {s.latest && <div className="mkt-card-foot">{t.markets.latest.split(' ')[0] + ':'} {s.latest}</div>}
       </Link>
     )
   }
@@ -127,7 +130,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
 
       {openMarkets.length > 0 && (
         <>
-          <div className="sec-head"><span className="sec-lbl">{lang === 'it' ? 'Mercati aperti' : 'Open now'}</span><div className="sec-line" /></div>
+          <div className="sec-head"><span className="sec-lbl">{t.markets.status.open}</span><div className="sec-line" /></div>
           <div className="mkt-directory" style={{}}>
             {openMarkets.map(c => renderCard(c))}
           </div>
@@ -136,7 +139,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
 
       {closedMarkets.length > 0 && (
         <>
-          <div className="sec-head" style={{ marginTop: 16 }}><span className="sec-lbl">{lang === 'it' ? 'Mercati chiusi' : 'Closed'}</span><div className="sec-line" /></div>
+          <div className="sec-head" style={{ marginTop: 16 }}><span className="sec-lbl">{t.markets.status.closed}</span><div className="sec-line" /></div>
           <div className="mkt-directory" style={{}}>
             {closedMarkets.map(c => renderCard(c))}
           </div>
@@ -149,7 +152,7 @@ export default async function MarketsPage({ params }: { params: Promise<{ lang: 
           <div key={c.code} className="mkt-card mkt-card-soon">
             <div className="mkt-card-flag">{c.flag}</div>
             <div className="mkt-card-name">{c.index}</div>
-            <div className="mkt-card-country">{c.name}</div>
+            <div className="mkt-card-country">{getCountryName(c.code, lang as string)}</div>
             <span className="mkt-card-status soon" style={{ marginTop: 12, display: 'inline-block' }}>{t.markets.status.soon}</span>
           </div>
         ))}

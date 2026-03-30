@@ -37,6 +37,10 @@ export const ui = {
       status: { open: 'Open', closed: 'Closed', soon: 'Soon' },
       stat: { today: 'Today', moves: 'Moves', stories: 'Stories' },
       latest: 'Latest stories',
+      openNow: 'Open now',
+      closedLabel: 'Closed',
+      latestPrefix: 'Latest:',
+      noArticles: 'No articles available yet.',
     },
     topics: {
       title: 'Topics',
@@ -131,6 +135,10 @@ export const ui = {
       status: { open: 'Aperto', closed: 'Chiuso', soon: 'Presto' },
       stat: { today: 'Oggi', moves: 'Movimenti', stories: 'Articoli' },
       latest: 'Ultime notizie',
+      openNow: 'Mercati aperti',
+      closedLabel: 'Mercati chiusi',
+      latestPrefix: 'Ultimo:',
+      noArticles: 'Nessun articolo disponibile.',
     },
     topics: {
       title: 'Argomenti',
@@ -225,6 +233,10 @@ export const ui = {
       status: { open: 'Ouvert', closed: 'Fermé', soon: 'Bientôt' },
       stat: { today: 'Aujourd\'hui', moves: 'Mouvements', stories: 'Articles' },
       latest: 'Dernières actualités',
+      openNow: 'Marchés ouverts',
+      closedLabel: 'Marchés fermés',
+      latestPrefix: 'Dernier :',
+      noArticles: 'Aucun article disponible.',
     },
     topics: {
       title: 'Thèmes',

@@ -43,7 +43,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     .filter((r: any) => r.stocks?.symbol && r.alerts?.change_pct != null)
     .map((r: any) => ({ symbol: r.stocks.symbol, change_pct: r.alerts.change_pct }))
 
-  const loc = lang === 'it' ? 'it-IT' : 'en-GB'
+  const loc = lang === 'fr' ? 'fr-FR' : lang === 'it' ? 'it-IT' : 'en-GB'
   const fmt = (d: string) => new Date(d).toLocaleDateString(loc, { weekday:'long', day:'numeric', month:'long', year:'numeric' })
   const today = fmt(new Date().toISOString())
 
@@ -68,7 +68,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               <div key={date}>
                 <div className="feed-date-divider">
                   <span className="feed-date-lbl">
-                    {date === today ? (lang === 'it' ? 'Oggi — ' : 'Today — ') + date : date}
+                    {date === today ? (lang === 'fr' ? "Aujourd'hui — " : lang === 'it' ? 'Oggi — ' : 'Today — ') + date : date}
                   </span>
                   <div className="feed-date-line" />
                   <span className="feed-date-count">{dayArticles.length} {t.archive.stories.toLowerCase()}</span>
@@ -79,7 +79,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </div>
             ))}
             {articles.length === 0 && (
-              <div className="empty-state">{lang === 'it' ? 'Nessun articolo disponibile.' : 'No articles available yet.'}</div>
+              <div className="empty-state">{lang === 'fr' ? 'Aucun article disponible.' : lang === 'it' ? 'Nessun articolo disponibile.' : 'No articles available yet.'}</div>
             )}
           </div>
           <Sidebar lang={lang as Lang} />

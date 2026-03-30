@@ -21,6 +21,22 @@ export const COUNTRIES: CountryConfig[] = [
 
 export const ACTIVE_COUNTRIES = COUNTRIES.filter(c => c.active)
 
+
+export const COUNTRY_NAMES: Record<string, Record<string, string>> = {
+  us: { en: 'United States', it: 'Stati Uniti', fr: 'États-Unis' },
+  it: { en: 'Italy', it: 'Italia', fr: 'Italie' },
+  fr: { en: 'France', it: 'Francia', fr: 'France' },
+  gb: { en: 'United Kingdom', it: 'Regno Unito', fr: 'Royaume-Uni' },
+  de: { en: 'Germany', it: 'Germania', fr: 'Allemagne' },
+  es: { en: 'Spain', it: 'Spagna', fr: 'Espagne' },
+  br: { en: 'Brazil', it: 'Brasile', fr: 'Brésil' },
+  jp: { en: 'Japan', it: 'Giappone', fr: 'Japon' },
+}
+
+export function getCountryName(code: string, lang: string): string {
+  return COUNTRY_NAMES[code]?.[lang] ?? COUNTRY_NAMES[code]?.en ?? code.toUpperCase()
+}
+
 export function getCountry(code: string): CountryConfig | undefined {
   return COUNTRIES.find(c => c.code === code)
 }
