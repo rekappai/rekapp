@@ -1184,8 +1184,7 @@ Copy
   line-height: 1.6;
   color: var(--text-dim);
   margin-bottom: 14px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--ink-border);
+  padding-bottom: 0;
 }
 
 /* ══ MARKET PULSE (SIDEBAR) ══ */
