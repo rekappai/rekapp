@@ -50,7 +50,7 @@ export default function LoadMore({ lang, initialCount, tag, pageSize = 20 }: Loa
           <button onClick={loadMore} disabled={loading} className="load-more-btn">
             {loading
               ? (lang === 'it' ? 'Caricamento...' : lang === 'fr' ? 'Chargement...' : 'Loading...')
-              : (lang === 'it' ? 'Carica altri articoli' : lang === 'fr' ? 'Charger plus' : 'Load more stories')
+              : (lang === 'it' ? 'Mostra altri articoli' : lang === 'fr' ? 'Afficher plus d'articles' : 'Load more stories')
             }
           </button>
         </div>
