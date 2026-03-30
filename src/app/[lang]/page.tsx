@@ -82,6 +82,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             {articles.length === 0 && (
               <div className="empty-state">{lang === 'fr' ? 'Aucun article disponible.' : lang === 'it' ? 'Nessun articolo disponibile.' : 'No articles available yet.'}</div>
             )}
+            <LoadMore lang={lang as Lang} initialCount={articles.length} />
           </div>
           <Sidebar lang={lang as Lang} />
         </div>
