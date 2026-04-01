@@ -18,15 +18,20 @@ export default function Header({ lang }: { lang: Lang }) {
   const pathname = usePathname()
   const [mob, setMob] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
-  const { altHref } = useAltSlug()
+  const { altHref, altSlugs } = useAltSlug()
 
   const curLang = ALL_LANGS.find(l => l.code === lang)!
   const otherLangs = ALL_LANGS.filter(l => l.code !== lang)
 
-  const langPath = (targetLang: string) =>
-    altHref
-      ? altHref.replace('/' + lang, '/' + targetLang)
-      : pathname.replace('/' + lang, '/' + targetLang)
+  const langPath = (targetLang: string) => {
+    if (altSlugs && altSlugs[targetLang]) {
+      return altSlugs[targetLang]
+    }
+    if (altHref) {
+      return altHref.replace('/' + lang, '/' + targetLang)
+    }
+    return pathname.replace('/' + lang, '/' + targetLang)
+  }
 
   const nav = [
     { href: '/' + lang,              label: t.nav.feed },

@@ -59,16 +59,47 @@ async function getRelated(stockId: string, sector: string | null, lang: string, 
   return results.slice(0, 3)
 }
 
-async function getAlternateSlug(alertId: string | null, stockId: string, otherLang: string): Promise<string | null> {
+async function getAllAlternateSlugs(alertId: string | null, stockId: string, currentLang: string): Promise<Record<string, string>> {
+  const allLangs = ['en', 'it', 'fr', 'es']
+  const otherLangs = allLangs.filter(l => l !== currentLang)
+  const slugMap: Record<string, string> = {}
+
   if (alertId) {
-    const { data } = await supabase.from('articles').select('meta_slug')
-      .eq('alert_id', alertId).eq('lang_code', otherLang).eq('published', true).single()
-    if (data?.meta_slug) return data.meta_slug
+    const { data } = await supabase.from('articles')
+      .select('lang_code, meta_slug')
+      .eq('alert_id', alertId)
+      .eq('published', true)
+      .in('lang_code', otherLangs)
+    if (data) {
+      for (const row of data) {
+        slugMap[row.lang_code] = '/' + row.lang_code + '/article/' + row.meta_slug
+      }
+    }
   }
-  const { data } = await supabase.from('articles').select('meta_slug')
-    .eq('stock_id', stockId).eq('lang_code', otherLang).eq('published', true)
-    .order('published_at', { ascending: false }).limit(1).single()
-  return data?.meta_slug ?? null
+
+  for (const lang of otherLangs) {
+    if (!slugMap[lang]) {
+      const { data } = await supabase.from('articles')
+        .select('meta_slug')
+        .eq('stock_id', stockId)
+        .eq('lang_code', lang)
+        .eq('published', true)
+        .order('published_at', { ascending: false })
+        .limit(1)
+        .single()
+      if (data?.meta_slug) {
+        slugMap[lang] = '/' + lang + '/article/' + data.meta_slug
+      }
+    }
+  }
+
+  for (const lang of otherLangs) {
+    if (!slugMap[lang]) {
+      slugMap[lang] = '/' + lang
+    }
+  }
+
+  return slugMap
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
@@ -87,9 +118,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
   const stock = Array.isArray((article as any).stocks) ? (article as any).stocks[0] : (article as any).stocks
   const alertData = Array.isArray((article as any).alerts) ? (article as any).alerts[0] : (article as any).alerts
   const tags = parseTags(article.tags)
-  const otherLang = lang === 'en' ? 'it' : 'en'
-  const altSlug = await getAlternateSlug(article.alert_id, article.stock_id, otherLang)
-  const altHref = altSlug ? '/' + otherLang + '/article/' + altSlug : '/' + otherLang
+  const altSlugs = await getAllAlternateSlugs(article.alert_id, article.stock_id, lang)
   const related = await getRelated(article.stock_id, stock?.sector ?? null, lang, slug)
   const direction = (article as any).direction
   const changePct = (article as any).change_pct
@@ -101,7 +130,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ lang: 
 
   return (
     <div className="page">
-      <AltSlugSetter href={altHref} />
+      <AltSlugSetter slugMap={altSlugs} />
       <div className="back-row">
         <Link href={'/' + lang} className="back-btn">{t.article.back}</Link>
         <div className="back-line" />
