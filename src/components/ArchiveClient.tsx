@@ -25,6 +25,9 @@ function firstStock(a: AA): StockRow | null {
   return Array.isArray(a.stocks) ? (a.stocks[0] ?? null) : a.stocks
 }
 function firstAlert(a: AA): AlertRow | null {
+  if (a.change_pct != null) {
+    return { direction: a.direction || 'up', change_pct: Number(a.change_pct) }
+  }
   if (!a.alerts) return null
   return Array.isArray(a.alerts) ? (a.alerts[0] ?? null) : a.alerts
 }
