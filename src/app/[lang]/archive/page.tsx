@@ -15,19 +15,20 @@ async function getArticles(lang: string) {
     .eq('lang_code', lang)
     .eq('published', true)
     .order('published_at', { ascending: false })
-    .limit(200)
+    .limit(300)
   return (data ?? []) as any[]
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
-  const meta = {
-    en: { title: 'Archive — Rekapp', description: 'Every financial story, every market, every day. Browse the full Rekapp archive.' },
-    it: { title: "Archivio — Rekapp", description: "Ogni articolo finanziario, ogni mercato, ogni giorno. Sfoglia l’archivio completo di Rekapp." },
-  } as Record<string, { title: string; description: string }>
+  const meta: Record<string, { title: string; description: string }> = {
+    en: { title: 'Archive \u2014 Rekapp', description: 'Every financial story, every market, every day. Browse the full Rekapp archive.' },
+    it: { title: 'Archivio \u2014 Rekapp', description: "Ogni articolo finanziario, ogni mercato, ogni giorno. Sfoglia l'archivio completo." },
+    fr: { title: 'Archives \u2014 Rekapp', description: "Chaque article financier, chaque march\u00e9, chaque jour. Parcourez les archives compl\u00e8tes." },
+    es: { title: 'Archivo \u2014 Rekapp', description: 'Cada art\u00edculo financiero, cada mercado, cada d\u00eda. Explora el archivo completo.' },
+  }
   return meta[lang] ?? meta.en
 }
-
 
 export default async function ArchivePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
