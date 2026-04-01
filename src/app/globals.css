@@ -1394,3 +1394,27 @@ Copy
     border-top: 1px solid var(--ink-border);
   }
 }
+
+/* ── Market Movers ── */
+.movers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media (max-width: 640px) { .movers-grid { grid-template-columns: 1fr; } }
+.movers-card { background: rgba(255,255,255,0.03); border: 0.5px solid var(--ink-border); border-radius: 10px; padding: 14px 16px; }
+.movers-hdr { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.movers-lbl { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.movers-lbl.up { color: var(--up); }
+.movers-lbl.dn { color: var(--down); }
+.movers-pill { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: transparent; font-family: 'Playfair Display', serif; font-size: 11px; color: rgba(255,255,255,0.4); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; line-height: 1; padding: 0; }
+.movers-pill:hover { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.6); }
+.movers-pill.open { background: var(--text); color: var(--bg); border-color: var(--text); }
+.movers-explainer { overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.25s ease, margin-bottom 0.3s ease; margin-bottom: 0; }
+.movers-explainer.show { max-height: 200px; opacity: 1; margin-bottom: 14px; }
+.movers-explainer-inner { font-size: 0.72rem; line-height: 1.6; color: var(--text-dim); background: rgba(255,255,255,0.04); border-radius: 8px; padding: 12px 14px; border-left: 2px solid rgba(255,255,255,0.1); }
+.movers-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid var(--ink-border); text-decoration: none; transition: opacity 0.15s; }
+.movers-row:last-child { border-bottom: none; }
+.movers-row:hover { opacity: 0.7; }
+.movers-left { display: flex; align-items: baseline; gap: 10px; flex: 1; min-width: 0; }
+.movers-sym { font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 500; color: var(--text); }
+.movers-name { font-size: 0.7rem; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.movers-pct { font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 500; flex-shrink: 0; }
+.movers-pct.up { color: var(--up); }
+.movers-pct.dn { color: var(--down); }
