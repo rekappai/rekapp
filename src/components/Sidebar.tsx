@@ -15,7 +15,7 @@ async function getMarketPulse(lang: string) {
     if (seen.has(d.country_code)) return false
     seen.add(d.country_code)
     return true
-  }).slice(0, 3)
+  }).slice(0, 4)
 }
 
 async function getMovers(lang: string) {
