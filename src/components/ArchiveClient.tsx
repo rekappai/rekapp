@@ -14,6 +14,8 @@ type AA = {
   published_at: string
   country_code: string
   tags: string | string[]
+  direction?: string
+  change_pct?: number
   stocks?: StockRow | StockRow[] | null
   alerts?: AlertRow | AlertRow[] | null
 }

@@ -8,9 +8,9 @@ async function getArticles(lang: string) {
   const { data } = await supabase
     .from('articles')
     .select(`
-      id, headline, meta_slug, published_at, country_code, tags,
+      id, headline, meta_slug, published_at, country_code, tags, direction, change_pct,
       stocks ( symbol, name ),
-      alerts ( direction, change_pct )
+      alerts!alert_id ( direction, change_pct )
     `)
     .eq('lang_code', lang)
     .eq('published', true)
