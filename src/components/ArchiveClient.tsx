@@ -102,7 +102,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
       const alert = firstAlert(a)
       const stock = firstStock(a)
       if (!alert || !stock) return ''
-      const sign = alert.direction === 'up' ? '+' : '\u2212'
+      const sign = alert.direction === 'up' ? '+' : '−'
       return `${stock.symbol} ${sign}${Math.abs(alert.change_pct).toFixed(1)}%`
     }).filter(Boolean)
     return top.join(', ')
@@ -128,7 +128,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
       {/* Mobile filter button */}
       <button className={'arc-mob-btn' + (activeCount > 0 ? ' has-filters' : '')} onClick={() => setDrawer(o => !o)}>
         <span>{activeCount > 0 ? `${t.archive.filters} (${activeCount})` : t.archive.filters}</span>
-        <span style={{ transition: 'transform 0.2s', transform: drawer ? 'rotate(180deg)' : 'none', fontSize: '0.5rem' }}>\u25BC</span>
+        <span style={{ transition: 'transform 0.2s', transform: drawer ? 'rotate(180deg)' : 'none', fontSize: '0.5rem' }}>▼</span>
       </button>
       {drawer && (
         <div className="arc-drawer">
@@ -163,7 +163,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
           return (
             <div key={dayKey} className="arc-day">
               <div className="arc-day-header" onClick={() => toggleDay(dayKey)}>
-                <span className={'arc-day-chevron' + (expanded ? ' open' : '')}>\u25B6</span>
+                <span className={'arc-day-chevron' + (expanded ? ' open' : '')}>▶</span>
                 <span className="arc-day-name">{weekday}</span>
                 <span className="arc-day-date">{dateStr}</span>
                 <div className="arc-day-right">
@@ -190,7 +190,7 @@ export default function ArchiveClient({ articles, lang, t }: { articles: AA[]; l
                       <div className="arc-story-meta">
                         {alert?.change_pct != null && (
                           <span className={'arc-story-pct ' + (up ? 'up' : 'dn')}>
-                            {up ? '+' : '\u2212'}{Math.abs(alert.change_pct).toFixed(1)}%
+                            {up ? '+' : '−'}{Math.abs(alert.change_pct).toFixed(1)}%
                           </span>
                         )}
                         <span className="arc-story-time">{time}</span>
