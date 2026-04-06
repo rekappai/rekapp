@@ -16,13 +16,13 @@ type SearchResult = {
 }
 
 const LABELS: Record<string, {
-  placeholder: string; cancel: string; noResults: string;
+  placeholder: string; placeholderShort: string; cancel: string; noResults: string;
   hint: string; articles: string
 }> = {
-  en: { placeholder: 'Search by ticker, company, or keyword...', cancel: 'Cancel', noResults: 'No results found. Try a ticker symbol or company name.', hint: 'Min. 2 characters', articles: 'Articles' },
-  it: { placeholder: 'Cerca per ticker, azienda o parola chiave...', cancel: 'Annulla', noResults: 'Nessun risultato. Prova con un ticker o il nome dell\'azienda.', hint: 'Min. 2 caratteri', articles: 'Articoli' },
-  fr: { placeholder: 'Rechercher par ticker, entreprise ou mot-clé...', cancel: 'Annuler', noResults: 'Aucun résultat. Essayez un ticker ou un nom d\'entreprise.', hint: 'Min. 2 caractères', articles: 'Articles' },
-  es: { placeholder: 'Buscar por ticker, empresa o palabra clave...', cancel: 'Cancelar', noResults: 'Sin resultados. Prueba con un ticker o nombre de empresa.', hint: 'Mín. 2 caracteres', articles: 'Artículos' },
+  en: { placeholder: 'Search by ticker, company, or keyword...', placeholderShort: 'Search...', cancel: 'Cancel', noResults: 'No results found. Try a ticker symbol or company name.', hint: 'Min. 2 characters', articles: 'Articles' },
+  it: { placeholder: 'Cerca per ticker, azienda o parola chiave...', placeholderShort: 'Cerca...', cancel: 'Annulla', noResults: 'Nessun risultato. Prova con un ticker o il nome dell\'azienda.', hint: 'Min. 2 caratteri', articles: 'Articoli' },
+  fr: { placeholder: 'Rechercher par ticker, entreprise ou mot-clé...', placeholderShort: 'Rechercher...', cancel: 'Annuler', noResults: 'Aucun résultat. Essayez un ticker ou un nom d\'entreprise.', hint: 'Min. 2 caractères', articles: 'Articles' },
+  es: { placeholder: 'Buscar por ticker, empresa o palabra clave...', placeholderShort: 'Buscar...', cancel: 'Cancelar', noResults: 'Sin resultados. Prueba con un ticker o nombre de empresa.', hint: 'Mín. 2 caracteres', articles: 'Artículos' },
 }
 
 function timeAgo(iso: string): string {
@@ -45,6 +45,10 @@ export default function SearchModal({ lang, isOpen, onClose }: { lang: Lang; isO
   const containerRef = useRef<HTMLDivElement>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
   const labels = LABELS[lang] || LABELS.en
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
 
   useEffect(() => {
     if (isOpen) {
@@ -144,7 +148,7 @@ export default function SearchModal({ lang, isOpen, onClose }: { lang: Lang; isO
             value={query}
             onChange={e => handleInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={labels.placeholder}
+            placeholder={isMobile ? labels.placeholderShort : labels.placeholder}
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
