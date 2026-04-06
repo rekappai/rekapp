@@ -57,6 +57,18 @@ export default function Header({ lang }: { lang: Lang }) {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  // Close language dropdown on click outside
+  useEffect(() => {
+    if (!langOpen) return
+    const handler = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [langOpen])
+
 const isActive = (href: string) =>
     href === '/' + lang ? pathname === '/' + lang : pathname.startsWith(href)
 
