@@ -1754,3 +1754,10 @@ Copy
     text-overflow: ellipsis;
   }
 }
+
+/* ── Mobile: prevent iOS auto-zoom on input focus ── */
+@media (max-width: 767px) {
+  .sm-bar-input {
+    font-size: 16px;
+  }
+}
