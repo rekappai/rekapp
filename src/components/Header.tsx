@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { type Lang, useTranslations } from '@/lib/i18n'
 import { useAltSlug } from '@/lib/AltSlugContext'
 import LogoTypewriter from './LogoTypewriter'
