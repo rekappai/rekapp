@@ -119,16 +119,7 @@ const isActive = (href: string) =>
                 {item.label}
               </Link>
             ))}
-          
-            <button
-                className="mob-row search-mob-row"
-                onClick={() => { setMob(false); setSearchOpen(true) }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 8 }}>
-                  <circle cx="11" cy="11" r="7" /><line x1="16.65" y1="16.65" x2="21" y2="21" />
-                </svg>
-                {t.nav.search || 'Search'}
-              </button>
+
           </div>
           <div className="mob-section">
             <div className="mob-section-head">Language / Lingua / Langue</div>
@@ -144,6 +135,17 @@ const isActive = (href: string) =>
                 </Link>
               ))}
             </div>
+          </div>
+          <div className="mob-section">
+            <button
+              className="mob-row search-mob-row"
+              onClick={() => { setMob(false); setSearchOpen(true) }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 8 }}>
+                <circle cx="11" cy="11" r="7" /><line x1="16.65" y1="16.65" x2="21" y2="21" />
+              </svg>
+              {t.nav.search || 'Search'}
+            </button>
           </div>
         </div>
       )}
