@@ -1927,3 +1927,17 @@ html.light .arc-filter-bar { background: var(--ink-raised); }
 html.light .arc-pill.on { background: rgba(184,147,62,0.08); }
 html.light .page-title { color: #2C2A26; }
 html.light .page-sub { color: #6b6660; }
+
+/* Mobile drawer: pin theme toggle at bottom */
+.mob-drawer {
+  display: flex;
+  flex-direction: column;
+}
+.mob-drawer-bottom {
+  margin-top: auto;
+  border-top: 1px solid var(--ink-border);
+  padding: 0;
+}
+.mob-drawer-bottom .drawer-theme-row {
+  padding: 14px var(--pad);
+}

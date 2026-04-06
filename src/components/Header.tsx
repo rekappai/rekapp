@@ -138,14 +138,6 @@ const isActive = (href: string) =>
             </div>
           </div>
                     <div className="mob-section">
-            <div className="drawer-theme-row">
-              <span className="drawer-theme-label">
-                {({ en: 'Theme', it: 'Tema', fr: 'Thème', es: 'Tema' }[lang] || 'Theme')}
-              </span>
-              <ThemeToggle />
-            </div>
-          </div>
-          <div className="mob-section">
             <button
               className="mob-row search-mob-row"
               onClick={() => { setMob(false); setSearchOpen(true) }}
@@ -155,6 +147,14 @@ const isActive = (href: string) =>
               </svg>
               {t.nav.search || 'Search'}
             </button>
+          </div>
+          <div className="mob-drawer-bottom">
+            <div className="drawer-theme-row">
+              <span className="drawer-theme-label">
+                {({ en: 'Theme', it: 'Tema', fr: 'Thème', es: 'Tema' }[lang] || 'Theme')}
+              </span>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       )}
