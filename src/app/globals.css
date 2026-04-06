@@ -1913,3 +1913,17 @@ html.light .feed-h.hero {
 html.light .feed-item:hover .feed-h {
   color: var(--gold);
 }
+
+/* Light mode: archive page fixes */
+html.light .archive-day-weekday { color: #6b6660; }
+html.light .archive-day-num { color: #2C2A26; }
+html.light .archive-story-h { color: #5a5650; }
+html.light .archive-story:hover .archive-story-h { color: #2C2A26; }
+html.light .archive-story-ticker { color: #2C2A26; background: #E2DFD8; }
+html.light .archive-day-count { color: #2C2A26; }
+html.light .archive-day-count-lbl { color: #6b6660; }
+html.light .archive-month-lbl { color: var(--gold); }
+html.light .arc-filter-bar { background: var(--ink-raised); }
+html.light .arc-pill.on { background: rgba(184,147,62,0.08); }
+html.light .page-title { color: #2C2A26; }
+html.light .page-sub { color: #6b6660; }
