@@ -7,6 +7,7 @@ import CookieConsent from '@/components/CookieConsent'
 import type { Lang } from '@/lib/i18n'
 import Script from 'next/script'
 import { AltSlugProvider } from '@/lib/AltSlugContext'
+import { ThemeProvider } from '@/lib/ThemeContext'
 import '../globals.css'
 
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair', display: 'swap' })
@@ -28,14 +29,17 @@ export default async function LangLayout({ children, params }: { children: React
     <html lang={lang} className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable}`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('rek-theme');if(t==='light')document.documentElement.classList.add('light')}catch(e){}})()` }} />
         <Script id="gtm-script" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PJNMR9GN');` }} />
       </head>
       <body style={{ background: 'var(--ink)', color: 'var(--text)', fontFamily: "'DM Sans', sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJNMR9GN" height="0" width="0" style={{ display: 'none', visibility: 'hidden' }} /></noscript>
         <AltSlugProvider>
+        <ThemeProvider>
           <Header lang={lang as Lang} />
           <main style={{ minHeight: '60vh' }}>{children}</main>
           <Footer lang={lang as Lang} />
+        </ThemeProvider>
         </AltSlugProvider>
         <CookieConsent lang={lang as Lang} />
       </body>

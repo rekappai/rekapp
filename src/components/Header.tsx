@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { type Lang, useTranslations } from '@/lib/i18n'
 import { useAltSlug } from '@/lib/AltSlugContext'
 import LogoTypewriter from './LogoTypewriter'
+import ThemeToggle from './ThemeToggle'
 import SearchModal from './SearchModal'
 
 const ALL_LANGS: { code: Lang; flag: string; label: string }[] = [
@@ -134,6 +135,14 @@ const isActive = (href: string) =>
                   {ol.flag} {ol.label}
                 </Link>
               ))}
+            </div>
+          </div>
+                    <div className="mob-section">
+            <div className="drawer-theme-row">
+              <span className="drawer-theme-label">
+                {({ en: 'Theme', it: 'Tema', fr: 'Thème', es: 'Tema' }[lang] || 'Theme')}
+              </span>
+              <ThemeToggle />
             </div>
           </div>
           <div className="mob-section">

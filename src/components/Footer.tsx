@@ -1,5 +1,7 @@
+'use client'
 import Link from 'next/link'
 import { type Lang, useTranslations } from '@/lib/i18n'
+import ThemeToggle from './ThemeToggle'
 
 export default function Footer({ lang }: { lang: Lang }) {
   const t = useTranslations(lang)
@@ -24,7 +26,10 @@ export default function Footer({ lang }: { lang: Lang }) {
           </div>
         </div>
         <div className="footer-disclaimer">{disclaimer}</div>
-        <span className="foot-copy">© {new Date().getFullYear()} Rekapp \u00b7 {t.footer.copy}</span>
+        <div className="footer-theme-row">
+          <span className="foot-copy">&copy; {new Date().getFullYear()} Rekapp &middot; {t.footer.copy}</span>
+          <ThemeToggle />
+        </div>
       </div>
     </footer>
   )
