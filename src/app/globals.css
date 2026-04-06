@@ -1904,8 +1904,12 @@ html.light .mob-drawer {
   color: var(--text-dim);
 }
 
-/* Light mode: feed headlines in gold for contrast */
+
+/* Light mode: feed headlines — dark text, gold on hover */
 html.light .feed-h,
 html.light .feed-h.hero {
+  color: #2C2A26;
+}
+html.light .feed-item:hover .feed-h {
   color: var(--gold);
 }
