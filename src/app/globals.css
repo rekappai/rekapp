@@ -1300,7 +1300,7 @@ Copy
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 10000;
   background: var(--ink-raised);
   border-top: 1px solid var(--ink-border);
   padding: 16px var(--pad);

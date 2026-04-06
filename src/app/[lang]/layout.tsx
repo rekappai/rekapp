@@ -36,8 +36,8 @@ export default async function LangLayout({ children, params }: { children: React
           <Header lang={lang as Lang} />
           <main style={{ minHeight: '60vh' }}>{children}</main>
           <Footer lang={lang as Lang} />
-        <CookieConsent lang={lang as Lang} />
         </AltSlugProvider>
+        <CookieConsent lang={lang as Lang} />
       </body>
     </html>
   )
