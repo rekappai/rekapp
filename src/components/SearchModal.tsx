@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { type Lang, useTranslations } from '@/lib/i18n'
+import { type Lang } from '@/lib/i18n'
 
 type SearchResult = {
   id: string
@@ -15,7 +15,7 @@ type SearchResult = {
   company_name: string | null
 }
 
-const SEARCH_LABELS: Record<string, {
+const LABELS: Record<string, {
   placeholder: string; cancel: string; noResults: string;
   hint: string; articles: string
 }> = {
@@ -25,7 +25,7 @@ const SEARCH_LABELS: Record<string, {
   es: { placeholder: 'Buscar por ticker, empresa o palabra clave...', cancel: 'Cancelar', noResults: 'Sin resultados. Prueba con un ticker o nombre de empresa.', hint: 'Mín. 2 caracteres', articles: 'Artículos' },
 }
 
-function timeAgo(iso: string, lang: string): string {
+function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
   const mins = Math.floor(diff / 60000)
   if (mins < 60) return `${mins}m`
@@ -42,10 +42,10 @@ export default function SearchModal({ lang, isOpen, onClose }: { lang: Lang; isO
   const [loading, setLoading] = useState(false)
   const [activeIdx, setActiveIdx] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
-  const labels = SEARCH_LABELS[lang] || SEARCH_LABELS.en
+  const labels = LABELS[lang] || LABELS.en
 
-  // Focus input when modal opens
   useEffect(() => {
     if (isOpen) {
       setQuery('')
@@ -55,7 +55,6 @@ export default function SearchModal({ lang, isOpen, onClose }: { lang: Lang; isO
     }
   }, [isOpen])
 
-  // Lock body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -65,7 +64,19 @@ export default function SearchModal({ lang, isOpen, onClose }: { lang: Lang; isO
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
-  // Debounced search
+  // Close on click outside (desktop)
+  useEffect(() => {
+    if (!isOpen) return
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        onClose()
+      }
+    }
+    // Delay to avoid closing on the same click that opened it
+    const t = setTimeout(() => document.addEventListener('mousedown', handler), 100)
+    return () => { clearTimeout(t); document.removeEventListener('mousedown', handler) }
+  }, [isOpen, onClose])
+
   const doSearch = useCallback(async (q: string) => {
     if (q.length < 2) { setResults([]); setLoading(false); return }
     setLoading(true)
@@ -109,21 +120,26 @@ export default function SearchModal({ lang, isOpen, onClose }: { lang: Lang; isO
 
   if (!isOpen) return null
 
+  const hasResults = query.length >= 2 && results.length > 0
+  const showEmpty = query.length >= 2 && !loading && results.length === 0
+  const showLoading = query.length >= 2 && loading && results.length === 0
+  const showHint = query.length > 0 && query.length < 2
+
   return (
     <>
-      {/* Backdrop — desktop only */}
-      <div className="search-backdrop" onClick={onClose} />
+      {/* Desktop: backdrop dims the page */}
+      <div className="sm-backdrop" onClick={onClose} />
 
-      {/* Modal */}
-      <div className="search-modal">
-        {/* Input bar */}
-        <div className="search-modal-bar">
-          <svg className="search-modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      {/* Mobile: full-screen takeover. Desktop: contained dropdown below header */}
+      <div className="sm-wrapper" ref={containerRef}>
+        {/* Search input bar */}
+        <div className="sm-bar">
+          <svg className="sm-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="7" /><line x1="16.65" y1="16.65" x2="21" y2="21" />
           </svg>
           <input
             ref={inputRef}
-            className="search-modal-input"
+            className="sm-bar-input"
             type="text"
             value={query}
             onChange={e => handleInput(e.target.value)}
@@ -133,56 +149,57 @@ export default function SearchModal({ lang, isOpen, onClose }: { lang: Lang; isO
             autoCorrect="off"
             spellCheck={false}
           />
-          <button className="search-modal-close" onClick={onClose}>{labels.cancel}</button>
+          <button className="sm-bar-close" onClick={onClose}>
+            <span className="sm-bar-close-esc">esc</span>
+            <span className="sm-bar-close-cancel">{labels.cancel}</span>
+          </button>
         </div>
 
-        {/* Results */}
-        <div className="search-modal-results">
-          {query.length >= 2 && results.length > 0 && (
-            <>
-              <div className="search-modal-section">{labels.articles}</div>
-              {results.map((r, i) => {
-                const up = r.direction === 'up'
-                return (
-                  <div
-                    key={r.id}
-                    className={'search-modal-item' + (i === activeIdx ? ' active' : '')}
-                    onClick={() => navigate(r.meta_slug)}
-                    onMouseEnter={() => setActiveIdx(i)}
-                  >
-                    {r.symbol && <span className="search-modal-ticker">{r.symbol}</span>}
-                    <div className="search-modal-body">
-                      <div className="search-modal-headline">{r.headline}</div>
-                      <div className="search-modal-meta">
-                        {r.change_pct != null && r.change_pct !== 0 && (
-                          <span className={'search-modal-chg ' + (up ? 'up' : 'dn')}>
-                            {up ? '+' : ''}{Number(r.change_pct).toFixed(1)}%
-                          </span>
-                        )}
-                        <span className="search-modal-time">{timeAgo(r.published_at, lang)}</span>
-                        {r.country_code && <span className="search-modal-market">{r.country_code.toUpperCase()}</span>}
+        {/* Results dropdown */}
+        {(hasResults || showEmpty || showLoading || showHint) && (
+          <div className="sm-results">
+            {hasResults && (
+              <>
+                <div className="sm-section">{labels.articles}</div>
+                {results.map((r, i) => {
+                  const up = r.direction === 'up'
+                  return (
+                    <div
+                      key={r.id}
+                      className={'sm-item' + (i === activeIdx ? ' active' : '')}
+                      onClick={() => navigate(r.meta_slug)}
+                      onMouseEnter={() => setActiveIdx(i)}
+                    >
+                      {r.symbol && <span className="sm-ticker">{r.symbol}</span>}
+                      <div className="sm-body">
+                        <div className="sm-headline">{r.headline}</div>
+                        <div className="sm-meta">
+                          {r.change_pct != null && r.change_pct !== 0 && (
+                            <span className={'sm-chg ' + (up ? 'up' : 'dn')}>
+                              {up ? '+' : ''}{Number(r.change_pct).toFixed(1)}%
+                            </span>
+                          )}
+                          <span className="sm-time">{timeAgo(r.published_at)}</span>
+                          {r.country_code && <span className="sm-market">{r.country_code.toUpperCase()}</span>}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )
-              })}
-            </>
-          )}
-          {query.length >= 2 && !loading && results.length === 0 && (
-            <div className="search-modal-empty">{labels.noResults}</div>
-          )}
-          {query.length >= 2 && loading && results.length === 0 && (
-            <div className="search-modal-empty" style={{ color: 'var(--text-dim)' }}>...</div>
-          )}
-          {query.length < 2 && query.length > 0 && (
-            <div className="search-modal-empty">{labels.hint}</div>
-          )}
-        </div>
+                  )
+                })}
+              </>
+            )}
+            {showEmpty && <div className="sm-empty">{labels.noResults}</div>}
+            {showLoading && <div className="sm-empty">...</div>}
+            {showHint && <div className="sm-empty">{labels.hint}</div>}
+          </div>
+        )}
 
-        {/* Desktop keyboard hints */}
-        <div className="search-modal-hints">
-          <kbd>↵</kbd> open &nbsp;·&nbsp; <kbd>↑</kbd><kbd>↓</kbd> navigate &nbsp;·&nbsp; <kbd>esc</kbd> close
-        </div>
+        {/* Keyboard hints — desktop only */}
+        {hasResults && (
+          <div className="sm-hints">
+            <kbd>↵</kbd> open · <kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>esc</kbd> close
+          </div>
+        )}
       </div>
     </>
   )
