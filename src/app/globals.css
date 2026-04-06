@@ -1735,25 +1735,7 @@ Copy
 .search-mob-row:hover { color: var(--gold); }
 .search-mob-row svg { color: var(--gold); }
 
-/* ── Mobile search overflow fix ── */
-@media (max-width: 767px) {
-  .sm-wrapper {
-    overflow-x: hidden;
-    width: 100vw;
-    max-width: 100vw;
-  }
-  .sm-bar {
-    max-width: 100vw;
-    overflow: hidden;
-  }
-  .sm-bar-input {
-    min-width: 0;
-    max-width: 100%;
-    width: 0;
-    flex: 1 1 0;
-    text-overflow: ellipsis;
-  }
-}
+
 
 /* ── Mobile: prevent iOS auto-zoom on input focus ── */
 @media (max-width: 767px) {
