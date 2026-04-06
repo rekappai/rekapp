@@ -1753,17 +1753,17 @@ Copy
    LIGHT THEME
 ═══════════════════════════════════ */
 html.light {
-  --ink:         #F5F3EF;
-  --ink-raised:  #ECEAE4;
-  --ink-card:    #FFFFFF;
-  --ink-border:  #E2DFD8;
-  --ink-hover:   #E8E5DE;
-  --text:        #2C2A26;
-  --text-dim:    #8A857D;
-  --gold:        #B8933E;
-  --gold-border: #D8CDB0;
-  --up:          #3d7a4e;
-  --down:        #a04040;
+  --ink:         #F5F3EF !important;
+  --ink-raised:  #ECEAE4 !important;
+  --ink-card:    #FFFFFF !important;
+  --ink-border:  #E2DFD8 !important;
+  --ink-hover:   #E8E5DE !important;
+  --text:        #2C2A26 !important;
+  --text-dim:    #8A857D !important;
+  --gold:        #B8933E !important;
+  --gold-border: #D8CDB0 !important;
+  --up:          #3d7a4e !important;
+  --down:        #a04040 !important;
 }
 
 /* Light mode: header background */
