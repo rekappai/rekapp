@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { type Lang, useTranslations } from '@/lib/i18n'
 import { useAltSlug } from '@/lib/AltSlugContext'
 import LogoTypewriter from './LogoTypewriter'
@@ -20,6 +20,7 @@ export default function Header({ lang }: { lang: Lang }) {
   const pathname = usePathname()
   const [mob, setMob] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef<HTMLDivElement>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const { altHref, altSlugs } = useAltSlug()
 
@@ -85,7 +86,7 @@ const isActive = (href: string) =>
                 <circle cx="11" cy="11" r="7" /><line x1="16.65" y1="16.65" x2="21" y2="21" />
               </svg>
             </button>
-            <div className="lang-wrap">
+            <div className="lang-wrap" ref={langRef}>
               <button className={'lang-btn' + (langOpen ? ' open' : '')} onClick={() => setLangOpen(o => !o)}>
                 <span>{curLang.flag}</span>
                 <span>{curLang.label}</span>
