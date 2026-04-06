@@ -1903,3 +1903,9 @@ html.light .mob-drawer {
   text-transform: uppercase;
   color: var(--text-dim);
 }
+
+/* Light mode: feed headlines in gold for contrast */
+html.light .feed-h,
+html.light .feed-h.hero {
+  color: var(--gold);
+}
