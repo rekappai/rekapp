@@ -28,7 +28,6 @@ export async function GET() {
     { path: '/markets', changefreq: 'daily', priority: 0.7 },
     { path: '/topics', changefreq: 'daily', priority: 0.7 },
     { path: '/archive', changefreq: 'daily', priority: 0.6 },
-    { path: '/search', changefreq: 'weekly', priority: 0.4 },
   ]
 
   for (const lang of LANGUAGES) {
