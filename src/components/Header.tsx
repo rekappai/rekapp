@@ -127,7 +127,6 @@ const isActive = (href: string) =>
       {mob && (
         <div className="mob-drawer open">
           <div className="mob-section">
-            <div className="mob-section-head">Navigation</div>
             {nav.map(item => (
               <Link key={item.href} href={item.href} className={'mob-row' + (isActive(item.href) ? ' active' : '')} onClick={() => setMob(false)}>
                 {item.label}
